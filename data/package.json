@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "author": "erhant",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@pinecone-database/pinecone": "^1.1.2",
+    "csv-parser": "^3.0.0",
+    "langchain": "^0.0.178"
+  }
+}
