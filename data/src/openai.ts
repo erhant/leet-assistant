@@ -1,5 +1,5 @@
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { DataRow } from "./types";
+import { DataRow, DataRowEmbedding } from "./types";
 import { dataToSummarizedString } from "./data";
 
 /** Creates the OpenAI client for embeddings. */
@@ -11,7 +11,7 @@ export function connectOpenAI() {
 
   return new OpenAIEmbeddings({
     openAIApiKey: API_KEY,
-    modelName: "gpt-3.5-turbo",
+    // modelName: "gpt-3.5-turbo",
   });
 }
 
@@ -20,9 +20,20 @@ export async function dataToEmbeddings(
   openai: OpenAIEmbeddings,
   data: DataRow[]
 ) {
-  return await openai.embedDocuments(
-    data.map((r) => dataToSummarizedString(r))
+  const embeddings = await openai.embedDocuments(
+    data.map((d) => dataToSummarizedString(d))
   );
+
+  const embedData: DataRowEmbedding[] = data.map((d, i) => ({
+    id: d.id.toString(),
+    values: embeddings[i],
+    metadata: {
+      difficulty: d.difficulty,
+      topics: d.topics,
+    },
+  }));
+
+  return embedData;
 }
 
 export async function saveEmbeddingsToFile() {

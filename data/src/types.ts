@@ -1,3 +1,5 @@
+import { PineconeRecord } from "@pinecone-database/pinecone";
+
 /** A parsed row. */
 export interface DataRow {
   id: number;
@@ -34,10 +36,8 @@ export interface RawDataRow {
   "Similar Questions Text": string;
 }
 
-/** A data row, along with embeddings. */
-export interface DataRowEmbedding {
-  /** Question ID. */
-  id: number;
-  /** Vector embedding. */
-  embedding: number[];
-}
+/** Metadata stored within the vector store along with id and embeddings. */
+export type DataRowMetadata = Pick<DataRow, "difficulty" | "topics">;
+
+/** A data row for Pinecone, along with embeddings. */
+export type DataRowEmbedding = PineconeRecord<DataRowMetadata>;

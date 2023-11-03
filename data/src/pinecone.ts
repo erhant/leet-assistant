@@ -1,5 +1,5 @@
 import { Index, Pinecone } from "@pinecone-database/pinecone";
-import { DataRowEmbedding } from "./types";
+import { DataRowEmbedding, DataRowMetadata } from "./types";
 
 /** Connects to the existing Pinecone index for the Leet Assistant dataset. */
 export async function connectPinecone() {
@@ -15,15 +15,15 @@ export async function connectPinecone() {
     apiKey: API_KEY,
   });
 
-  return pinecone.Index(INDEX_NAME);
+  return pinecone.Index<DataRowMetadata>(INDEX_NAME);
 }
 
-export async function uploadIndex(index: Index, data: DataRowEmbedding[]) {
-  // TODO
-  // index.upsert([
-  //   {
-  //   }
-  // ])
+/** Update records to Pinecone. */
+export async function uploadPinecone(
+  index: Index<DataRowMetadata>,
+  data: DataRowEmbedding[]
+) {
+  await index.upsert(data);
 }
 
 if (import.meta.main) {

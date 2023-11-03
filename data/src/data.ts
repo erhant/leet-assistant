@@ -2,6 +2,9 @@ import { createReadStream } from "fs";
 import { DataRow, RawDataRow } from "./types";
 import csv from "csv-parser";
 
+/** Number of problems. */
+const MAX_ID = 2385;
+
 /** Loads the CSV data about LeetCode problems. */
 export async function loadData(path: string): Promise<DataRow[]> {
   const data: DataRow[] = [];
