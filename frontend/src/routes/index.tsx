@@ -1,19 +1,34 @@
+import { Show, createResource, createSignal } from "solid-js";
 import { Title } from "solid-start";
-import Counter from "~/components/Counter";
 
 export default function Home() {
+  const [data, setData] = createSignal<any>(undefined);
+
   return (
     <main>
-      <Title>Hello World</Title>
-      <h1>Hello world!</h1>
-      <Counter />
-      <p>
-        Visit{" "}
-        <a href="https://start.solidjs.com" target="_blank">
-          start.solidjs.com
-        </a>{" "}
-        to learn how to build SolidStart apps.
-      </p>
+      <Title>Leet Assistant</Title>
+
+      <button
+        onClick={() => {
+          fetch("http://localhost:3001/ai?prompt=hello")
+            .then((res) => res.json())
+            .then((obj) => {
+              console.log(obj);
+              setData(obj);
+            });
+        }}
+      >
+        Click Me
+      </button>
+      <Show when={data() !== undefined}>
+        <p>{JSON.stringify(data())}</p>
+      </Show>
     </main>
   );
 }
+
+/**
+ * 2
+ * V  >2
+ * >>>^
+ */

@@ -5,6 +5,9 @@ import csv from "csv-parser";
 /** Number of problems. */
 const MAX_ID = 2385;
 
+/** Placeholder for a question context, should mention this to GPT. */
+const PLACEHOLDER = "none";
+
 /** Loads the CSV data about LeetCode problems. */
 export async function loadData(path: string): Promise<DataRow[]> {
   const data: DataRow[] = [];
@@ -45,21 +48,17 @@ export async function loadData(path: string): Promise<DataRow[]> {
 
 /** Converts a data row to a single string. */
 export function dataToSummarizedString(data: DataRow) {
+  const similar = data.similarQuestionsText.join(",");
   return `Question: ${data.title}
-
-Description: ${data.description}
-
+Description: ${data.description ? PLACEHOLDER : data.description}
 Difficulty: ${data.difficulty}
-
 Topics: ${data.topics.join(",")}
- 
-Similar Questions: ${data.similarQuestionsText.join(",")}
-`;
+Similar Questions: ${similar.length === 0 ? PLACEHOLDER : similar}`;
 }
 
 if (import.meta.main) {
   const data = await loadData("leetcode_questions.csv");
-  console.log(data[0]);
-
+  const dataStrs = data.map((d) => dataToSummarizedString(d));
+  Bun.write("./questions.json", JSON.stringify(dataStrs));
   // console.log(dataToSummarizedString(data[0]));
 }
