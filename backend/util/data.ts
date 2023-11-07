@@ -1,6 +1,6 @@
-import { createReadStream } from "fs";
-import { DataRow, RawDataRow } from "./types";
+import fs from "fs";
 import csv from "csv-parser";
+import type { DataRow, RawDataRow } from "../types";
 
 /** Number of problems. */
 const MAX_ID = 2385;
@@ -13,8 +13,10 @@ export async function loadData(path: string): Promise<DataRow[]> {
   const data: DataRow[] = [];
 
   return new Promise((resolve, reject) => {
-    createReadStream(path)
+    fs.createReadStream(path)
+      // @ts-ignore FIXME: ??
       .pipe(csv())
+      // @ts-ignore FIXME: ??
       .on("data", (row: RawDataRow) => {
         const parsed: DataRow = {
           id: parseInt(row["Question ID"]),
@@ -57,8 +59,6 @@ Similar Questions: ${similar.length === 0 ? PLACEHOLDER : similar}`;
 }
 
 if (import.meta.main) {
-  const data = await loadData("leetcode_questions.csv");
-  const dataStrs = data.map((d) => dataToSummarizedString(d));
-  Bun.write("./questions.json", JSON.stringify(dataStrs));
-  // console.log(dataToSummarizedString(data[0]));
+  const data = await loadData("./data/leetcode_questions.csv");
+  console.log(dataToSummarizedString(data[0]));
 }

@@ -1,31 +1,53 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
-import OpenAI from "openai"; // TODO: use langchain https://js.langchain.com/docs/expression_language/cookbook/retrieval
+import { setupRAG } from "../util/openai";
 
-const openai = new OpenAI({
-  apiKey: Bun.env.OPENAI_APIKEY,
-});
+async function startServer() {
+  const { model, chain } = await setupRAG();
 
-const app = new Elysia()
-  .use(cors())
-  .get("/", () => "im still setting up")
-  .get(
-    "/hi",
-    () =>
-      new Response(
-        JSON.stringify({
-          response: "bye",
+  const app = new Elysia()
+    .use(cors())
+    .get(
+      "/prompt",
+      // simple ChatGPT integration
+      async ({ query: { prompt } }) => {
+        return await model.invoke(prompt).then((r) => r.content);
+      },
+      {
+        query: t.Object({
+          prompt: t.String(),
         }),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-  )
-  .post("/batch", (req) => {})
-  .listen(Bun.env.ELYSIA_PORT || 3001);
+      }
+    )
+    .get(
+      "/rag",
+      // simple ChatGPT integration with RAG
+      async ({ query: { prompt } }) => {
+        return await chain.invoke(prompt);
+      },
+      {
+        query: t.Object({
+          prompt: t.String(),
+        }),
+      }
+    )
+    // simple JSON response
+    .get("/hi", () => ({
+      response: "bye",
+    }))
+    .post("/batch", () => {
+      // TODO: SDK batch request
+    })
+    .post("/signal", () => {
+      // TODO: SDK signal
+    })
+    .listen(Bun.env.ELYSIA_PORT || 8080);
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+  return app;
+}
+
+startServer().then((app) => {
+  console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  );
+});
