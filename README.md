@@ -2,9 +2,8 @@
 
 > A personalized leet-code assistant, guiding you about problems to solve based on your performance & interests.
 
-- [Backend](./backend/): Written with ElysiaJS.
-- [Frontend](./frontend/): Written with SolidJS.
-- [Dataset](./data/): Dataset retrieved from Kaggle, converted to embeddings using OpenAI.
+- [Backend](./backend/): Bun + ElysiaJS + LangChain + Pinecone.
+- [Frontend](./frontend/): Bun + SolidJS.
 
 ## Usage
 

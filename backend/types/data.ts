@@ -1,4 +1,5 @@
-import { PineconeRecord } from "@pinecone-database/pinecone";
+import type { PineconeRecord } from "@pinecone-database/pinecone";
+import type { RecordId } from "@pinecone-database/pinecone";
 
 /** A parsed row. */
 export interface DataRow {
@@ -37,7 +38,9 @@ export interface RawDataRow {
 }
 
 /** Metadata stored within the vector store along with id and embeddings. */
-export type DataRowMetadata = Pick<DataRow, "difficulty" | "topics">;
+export type DataRowMetadata = Pick<DataRow, "difficulty" | "topics"> & {
+  id: RecordId;
+};
 
 /** A data row for Pinecone, along with embeddings. */
 export type DataRowEmbedding = PineconeRecord<DataRowMetadata>;

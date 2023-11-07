@@ -1,23 +1,20 @@
 import { dataToSummarizedString, loadData } from "../util/data";
 import { connectPinecone } from "../util/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { DataRowMetadata } from "../types";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { RecordId } from "@pinecone-database/pinecone";
+import type { DataRow, DataRowMetadata } from "../types";
 
 if (import.meta.main) {
   console.log("Loading & parsing CSV data...");
-  const data = await loadData("./data/leetcode_questions.csv").then((d) =>
-    d.slice(0, 10)
+  const data: DataRow[] = await loadData("./data/leetcode_questions.csv").then(
+    (d) => d.slice(0, 10) // FIXME: just for testing
   );
   const dataStrings: string[] = data.map((d) => dataToSummarizedString(d));
-  const dataMetadatas: (DataRowMetadata & { id: RecordId })[] = data.map(
-    (d) => ({
-      difficulty: d.difficulty,
-      topics: d.topics,
-      id: d.id.toString(),
-    })
-  );
+  const dataMetadatas: DataRowMetadata[] = data.map((d) => ({
+    difficulty: d.difficulty,
+    topics: d.topics,
+    id: d.id.toString(),
+  }));
   console.log(`Loaded ${data.length} items.`);
   console.log("Generating & uploading embeddings...");
   if (dataStrings.length !== dataMetadatas.length) {

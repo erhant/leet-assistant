@@ -11,6 +11,7 @@ import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { StringOutputParser } from "langchain/schema/output_parser";
 import { formatDocumentsAsString } from "langchain/util/document";
 import { connectPinecone } from "../util/pinecone";
+import promptString from "../constants/prompt";
 
 /** Using OpenAI, convert documents to embeddings. */
 export async function dataToEmbeddings(data: DataRow[]) {
@@ -27,6 +28,7 @@ export async function dataToEmbeddings(data: DataRow[]) {
     id: d.id.toString(),
     values: embeddings[i],
     metadata: {
+      id: d.id.toString(), // needed in case the data is used for another vector store
       difficulty: d.difficulty,
       topics: d.topics,
     },
@@ -55,8 +57,9 @@ export async function setupRAG() {
     }
   );
   const retriever = vectorStore.asRetriever();
-  const prompt = PromptTemplate.fromTemplate(`...`); // TODO: decide prompt
+  const prompt = PromptTemplate.fromTemplate(promptString);
   const chain = RunnableSequence.from([
+    // NOTE: the field names here must exist within the prompt string
     {
       context: retriever.pipe(formatDocumentsAsString),
       question: new RunnablePassthrough(),
