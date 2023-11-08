@@ -6,6 +6,7 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@bogeychan/elysia-logger": "^0.0.13",
     "@elysiajs/cors": "^0.7.1",
     "@pinecone-database/pinecone": "^1.1.2",
     "csv-parser": "^3.0.0",

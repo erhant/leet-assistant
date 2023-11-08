@@ -1,27 +1,38 @@
 import { Show, createResource, createSignal } from "solid-js";
 import { Title } from "solid-start";
+import { promptChatBot } from "~/api";
 
 export default function Home() {
-  const [data, setData] = createSignal<any>(undefined);
+  const [prompt, setPrompt] = createSignal("");
+  const [response, setResponse] = createSignal("");
 
   return (
     <main>
       <Title>Leet Assistant</Title>
 
+      <label for="fname">First name:</label>
+      <input
+        type="text"
+        id="fname"
+        name="fname"
+        onChange={(e) => {
+          // console.log();
+          setPrompt(e.currentTarget.value);
+        }}
+      ></input>
       <button
         onClick={() => {
-          fetch("http://localhost:3001/ai?prompt=hello")
-            .then((res) => res.json())
-            .then((obj) => {
-              console.log(obj);
-              setData(obj);
-            });
+          console.log("PROMPT:", prompt());
+          promptChatBot(prompt()).then((resp) => {
+            setResponse(resp);
+          });
         }}
       >
-        Click Me
+        send
       </button>
-      <Show when={data() !== undefined}>
-        <p>{JSON.stringify(data())}</p>
+
+      <Show when={response() !== ""} fallback={<p>chat not started</p>}>
+        <p>{response()}</p>
       </Show>
     </main>
   );

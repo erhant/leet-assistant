@@ -59,7 +59,7 @@ export async function setupRAG() {
   const retriever = vectorStore.asRetriever();
   const prompt = PromptTemplate.fromTemplate(promptString);
   const chain = RunnableSequence.from([
-    // NOTE: the field names here must exist within the prompt string
+    // NOTE: the field names here must exist within the prompt string as {field_name}
     {
       context: retriever.pipe(formatDocumentsAsString),
       question: new RunnablePassthrough(),

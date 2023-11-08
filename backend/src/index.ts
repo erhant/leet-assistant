@@ -1,53 +1,81 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
+import { logger } from "@bogeychan/elysia-logger";
 import { setupRAG } from "../util/openai";
 
 async function startServer() {
   const { model, chain } = await setupRAG();
 
   const app = new Elysia()
+    // plugins
     .use(cors())
-    .get(
-      "/prompt",
-      // simple ChatGPT integration
-      async ({ query: { prompt } }) => {
-        return await model.invoke(prompt).then((r) => r.content);
-      },
-      {
-        query: t.Object({
-          prompt: t.String(),
-        }),
-      }
+    .use(
+      logger({
+        level: "debug",
+      })
     )
-    .get(
-      "/rag",
+    .post(
+      "/prompt",
       // simple ChatGPT integration with RAG
-      async ({ query: { prompt } }) => {
+      async ({ query: { prompt, history }, log }) => {
+        log.info("[POST] RAG");
         return await chain.invoke(prompt);
       },
       {
         query: t.Object({
           prompt: t.String(),
+          history: t.Array(t.String()),
         }),
       }
     )
-    // simple JSON response
-    .get("/hi", () => ({
-      response: "bye",
-    }))
-    .post("/batch", () => {
-      // TODO: SDK batch request
-    })
-    .post("/signal", () => {
-      // TODO: SDK signal
-    })
+    .post(
+      "/batch",
+      ({ body: { sessionId } }) => {
+        // TODO: implement batch
+      },
+      {
+        body: t.Object({
+          sessionId: t.String(),
+        }),
+      }
+    )
+    .post(
+      "/signal",
+      ({ body: { signal, ids, sessionId } }) => {
+        // TODO: implement signal
+        switch (signal) {
+          case "solved": {
+            break;
+          }
+          case "try-again": {
+            break;
+          }
+          case "failed": {
+            break;
+          }
+          default:
+            signal satisfies never;
+            // Elysia should validate so we dont expect this to throw anyways
+            return new Error("Unknown signal.");
+        }
+      },
+      {
+        body: t.Object({
+          signal: t.Union([
+            t.Literal("solved"),
+            t.Literal("try-again"),
+            t.Literal("failed"),
+          ]),
+          ids: t.Array(t.String()),
+          sessionId: t.String(),
+        }),
+      }
+    )
     .listen(Bun.env.ELYSIA_PORT || 8080);
 
   return app;
 }
 
 startServer().then((app) => {
-  console.log(
-    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-  );
+  console.log(`Listening at ${app.server?.hostname}:${app.server?.port}`);
 });
