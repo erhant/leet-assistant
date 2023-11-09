@@ -14,23 +14,36 @@ async function startServer() {
         level: "debug",
       })
     )
+    // state
+    .state("sessions", {} as Record<string, string[]>)
+    // endpoints
+    .post("/new-session", ({ store: { sessions } }) => {
+      // TODO: create session with SDK
+      sessions["TODO_SESSION_NAME"] = [];
+    })
     .post(
       "/prompt",
       // simple ChatGPT integration with RAG
-      async ({ query: { prompt, history }, log }) => {
+      async ({ query: { prompt, sessionId }, store: { sessions }, log }) => {
+        if (!(sessionId in sessions)) {
+          return new Error("No such session.");
+        }
         log.info("[POST] RAG");
         return await chain.invoke(prompt);
       },
       {
         query: t.Object({
           prompt: t.String(),
-          history: t.Array(t.String()),
+          sessionId: t.String(),
         }),
       }
     )
     .post(
       "/batch",
-      ({ body: { sessionId } }) => {
+      ({ body: { sessionId }, store: { sessions } }) => {
+        if (!(sessionId in sessions)) {
+          return new Error("No such session.");
+        }
         // TODO: implement batch
       },
       {
@@ -41,7 +54,11 @@ async function startServer() {
     )
     .post(
       "/signal",
-      ({ body: { signal, ids, sessionId } }) => {
+      ({ body: { signal, ids, sessionId }, store: { sessions } }) => {
+        if (!(sessionId in sessions)) {
+          return new Error("No such session.");
+        }
+
         // TODO: implement signal
         switch (signal) {
           case "solved": {

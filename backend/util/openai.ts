@@ -13,7 +13,10 @@ import { formatDocumentsAsString } from "langchain/util/document";
 import { connectPinecone } from "../util/pinecone";
 import promptString from "../constants/prompt";
 
-/** Using OpenAI, convert documents to embeddings. */
+/** Using OpenAI, convert documents to embeddings.
+ *
+ * @deprecated we are using `fromText` method of langchain's Pinecone instead.
+ */
 export async function dataToEmbeddings(data: DataRow[]) {
   const API_KEY = Bun.env.OPENAI_API_KEY;
   const openai = new OpenAIEmbeddings({
