@@ -22,7 +22,7 @@ if (import.meta.main) {
   const pinecone = await connectPinecone();
 
   // FIXME: batching was done because I kept getting 503 error code,
-  // but it turns out that Openai is down (https://status.openai.com/)
+  // but it turns out that Openai was down instead (https://status.openai.com/)
   //
   // we might not batching at all
   const batchSize = 50;

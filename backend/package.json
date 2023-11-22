@@ -11,6 +11,7 @@
     "@pinecone-database/pinecone": "1.0.1",
     "csv-parser": "^3.0.0",
     "elysia": "latest",
+    "firstbatch": "^0.1.0",
     "langchain": "^0.0.181"
   },
   "devDependencies": {
