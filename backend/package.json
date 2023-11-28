@@ -15,7 +15,11 @@
     "langchain": "^0.0.181"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "prettier": "^3.1.0"
+  },
+  "prettier": {
+    "printWidth": 120
   },
   "module": "src/index.js"
 }

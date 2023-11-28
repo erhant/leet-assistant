@@ -31,9 +31,7 @@ export async function loadData(path: string): Promise<DataRow[]> {
           likes: parseInt(row["Likes"]),
           dislikes: parseInt(row["Dislikes"]),
           hints: row["Hints"],
-          similarQuestionIds: row["Similar Questions ID"]
-            .split(",")
-            .map((idStr: string) => parseInt(idStr)),
+          similarQuestionIds: row["Similar Questions ID"].split(",").map((idStr: string) => parseInt(idStr)),
           similarQuestionsText: row["Similar Questions Text"].split(","),
         };
 

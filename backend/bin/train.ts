@@ -36,7 +36,7 @@ if (import.meta.main) {
       }),
       {
         pineconeIndex: pinecone,
-      }
+      },
     );
   }
 

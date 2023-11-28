@@ -1,44 +1,43 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { logger } from "@bogeychan/elysia-logger";
-import { setupRAG } from "../util/openai";
-import { FirstBatch, Signal, UserAction } from "firstbatch";
+import { setupRAG } from "../util/langchain";
+import { Signal, UserAction } from "firstbatch";
 import { setupFirstBatch } from "../util/firstbatch";
 import constants from "../constants";
+
+const ErrInvalidSession = new Error("Invalid session.");
+
+const Actions = {
+  Solved: new UserAction(new Signal("SOLVED", 1.2)),
+  TryAgain: new UserAction(new Signal("TRY_AGAIN", 1.2)),
+  Failed: new UserAction(new Signal("FAILED", 1.2)),
+};
 
 async function startServer() {
   const { chain } = await setupRAG();
   const personalized = await setupFirstBatch();
-
-  // errors
-  const ErrInvalidSession = new Error("Invalid session.");
-
-  // signals & actions
-  const ActionSolved = new UserAction(new Signal("SOLVED", 1.2));
-  const ActionTryAgain = new UserAction(new Signal("TRY_AGAIN", 1.2));
-  const ActionFailed = new UserAction(new Signal("FAILED", 1.2));
+  console.log("FirstBatch TeamID:", personalized.teamId);
 
   const app = new Elysia()
     ///////////////  plugins  \\\\\\\\\\\\\\\
     .use(cors())
     .use(logger({ level: "debug" }))
     ///////////////   state   \\\\\\\\\\\\\\\
-    .state(
-      "sessions",
-      {} as Record<string, Awaited<ReturnType<typeof personalized.session>>>
-    )
+    .state("sessions", {} as Record<string, Awaited<ReturnType<typeof personalized.session>>>)
     /////////////// endpoints \\\\\\\\\\\\\\\
     .post(
       "/new-session",
       // creates a new user embedding session
-      async ({ store: { sessions } }) => {
-        const session = await personalized.session(
-          constants.FIRSTBATCH.ALGORITHM_ID!, // TODO: check nullity
-          constants.FIRSTBATCH.VECTORDB_ID
-        );
+      async ({ store: { sessions }, log }) => {
+        const session = await personalized.session("CUSTOM", constants.FIRSTBATCH.VECTORDB_ID, {
+          customId: constants.FIRSTBATCH.ALGORITHM_ID,
+        });
         sessions[session.id] = session;
+
+        log.info("Created session:", session.id);
         return { sessionId: session.id };
-      }
+      },
     )
     .post(
       "/prompt",
@@ -47,7 +46,6 @@ async function startServer() {
         if (!(sessionId in sessions)) {
           return ErrInvalidSession;
         }
-        log.info("[POST] RAG");
         return await chain.invoke(prompt);
       },
       {
@@ -55,7 +53,7 @@ async function startServer() {
           prompt: t.String(),
           sessionId: t.String(),
         }),
-      }
+      },
     )
     .post(
       "/batch",
@@ -68,15 +66,12 @@ async function startServer() {
         const batches = await personalized.batch(sessions[sessionId]);
         return { batches };
       },
-      { body: t.Object({ sessionId: t.String() }) }
+      { body: t.Object({ sessionId: t.String() }) },
     )
     .post(
       "/signal",
       // signals a navigation within the user embeddings space
-      async ({
-        body: { signal, contentId, sessionId },
-        store: { sessions },
-      }) => {
+      async ({ body: { signal, contentId, sessionId }, store: { sessions } }) => {
         if (!(sessionId in sessions)) {
           return ErrInvalidSession;
         }
@@ -85,19 +80,15 @@ async function startServer() {
         let ok = false;
         switch (signal) {
           case "solved": {
-            ok = await personalized.addSignal(session, ActionSolved, contentId);
+            ok = await personalized.addSignal(session, Actions.Solved, contentId);
             break;
           }
           case "try-again": {
-            ok = await personalized.addSignal(
-              session,
-              ActionTryAgain,
-              contentId
-            );
+            ok = await personalized.addSignal(session, Actions.TryAgain, contentId);
             break;
           }
           case "failed": {
-            ok = await personalized.addSignal(session, ActionFailed, contentId);
+            ok = await personalized.addSignal(session, Actions.Failed, contentId);
             break;
           }
           default:
@@ -110,15 +101,11 @@ async function startServer() {
       },
       {
         body: t.Object({
-          signal: t.Union([
-            t.Literal("solved"),
-            t.Literal("try-again"),
-            t.Literal("failed"),
-          ]),
+          signal: t.Union([t.Literal("solved"), t.Literal("try-again"), t.Literal("failed")]),
           contentId: t.String(),
           sessionId: t.String(),
         }),
-      }
+      },
     )
     .listen(Bun.env.ELYSIA_PORT || 8080);
 

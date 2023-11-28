@@ -11,7 +11,7 @@ export default function Question(props: { title: string; slug: string }) {
       </a>
       <div class="question-buttons">
         <button>Solved</button>
-        <button>Ask Again</button>
+        <button>Repeat</button>
         <button>Failed</button>
       </div>
     </div>

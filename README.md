@@ -5,6 +5,8 @@
 - [Backend](./backend/): Bun + ElysiaJS + LangChain + Pinecone.
 - [Frontend](./frontend/): Bun + SolidJS.
 
+Based on the [RAG tutorial](https://js.langchain.com/docs/expression_language/cookbook/retrieval) by LangChain. You can find the example codes there here as well, under the [examples](./backend/examples/) folder.
+
 ## Usage
 
 When you connect to `URL_HERE`, you will be greeted with a conversation screen where you talk about algorithm topics with a bot.
