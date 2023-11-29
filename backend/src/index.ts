@@ -5,6 +5,8 @@ import { setupRAG } from "../util/langchain";
 import { Signal, UserAction } from "firstbatch";
 import { setupFirstBatch } from "../util/firstbatch";
 import constants from "../constants";
+import { SessionType } from "../types";
+import { connectPinecone } from "../util/pinecone";
 
 const ErrInvalidSession = new Error("Invalid session.");
 
@@ -15,8 +17,13 @@ const Actions = {
 };
 
 async function startServer() {
+  console.log("Setting up LangChain.");
   const { chain } = await setupRAG();
-  const personalized = await setupFirstBatch();
+  console.log("Connecting to Pinecone.");
+  const index = await connectPinecone();
+  console.log("Setting up FirstBatch SDK.");
+  const personalized = await setupFirstBatch(index);
+
   console.log("FirstBatch TeamID:", personalized.teamId);
 
   const app = new Elysia()
@@ -24,32 +31,72 @@ async function startServer() {
     .use(cors())
     .use(logger({ level: "debug" }))
     ///////////////   state   \\\\\\\\\\\\\\\
-    .state("sessions", {} as Record<string, Awaited<ReturnType<typeof personalized.session>>>)
+    .state("sessions", {} as SessionType)
+    // .onError(({ code, error, log }) => {
+    //   log.error({ code, error: error.toString() });
+    //   return new Response(error.toString());
+    // })
     /////////////// endpoints \\\\\\\\\\\\\\\
     .post(
       "/new-session",
       // creates a new user embedding session
       async ({ store: { sessions }, log }) => {
-        const session = await personalized.session("CUSTOM", constants.FIRSTBATCH.VECTORDB_ID, {
+        const session = await personalized.session("SIMPLE", constants.FIRSTBATCH.VECTORDB_ID, {
           customId: constants.FIRSTBATCH.ALGORITHM_ID,
         });
-        sessions[session.id] = session;
+        sessions[session.id] = {
+          sdkSession: session,
+          chatHistory: [],
+        };
 
         log.info("Created session:", session.id);
         return { sessionId: session.id };
       },
     )
     .post(
-      "/prompt",
-      // simple ChatGPT integration with RAG
-      async ({ query: { prompt, sessionId }, store: { sessions }, log }) => {
+      "/get-session",
+      // returns the user session
+      ({ body: { sessionId }, store: { sessions } }) => {
         if (!(sessionId in sessions)) {
           return ErrInvalidSession;
         }
-        return await chain.invoke(prompt);
+        const session = sessions[sessionId];
+        return { session };
+      },
+      { body: t.Object({ sessionId: t.String() }) },
+    )
+    .post(
+      "/prompt",
+      // simple ChatGPT integration with RAG
+      async ({ body: { prompt, sessionId }, store: { sessions } }) => {
+        if (!(sessionId in sessions)) {
+          console.log("invalid session");
+          return ErrInvalidSession;
+        }
+        const session = sessions[sessionId];
+        try {
+          const context = await personalized.batch(session.sdkSession, {
+            batchSize: 10,
+          });
+          console.log(context);
+        } catch (err) {
+          console.error(err);
+          throw err;
+        }
+
+        const response = await chain.invoke({
+          chatHistory: session.chatHistory,
+          context: [],
+          question: prompt,
+        });
+
+        // store the response in user history
+        session.chatHistory.push([prompt, response]);
+
+        return response;
       },
       {
-        query: t.Object({
+        body: t.Object({
           prompt: t.String(),
           sessionId: t.String(),
         }),
@@ -63,7 +110,7 @@ async function startServer() {
           return ErrInvalidSession;
         }
 
-        const batches = await personalized.batch(sessions[sessionId]);
+        const batches = await personalized.batch(sessions[sessionId].sdkSession);
         return { batches };
       },
       { body: t.Object({ sessionId: t.String() }) },
@@ -80,15 +127,15 @@ async function startServer() {
         let ok = false;
         switch (signal) {
           case "solved": {
-            ok = await personalized.addSignal(session, Actions.Solved, contentId);
+            ok = await personalized.addSignal(session.sdkSession, Actions.Solved, contentId);
             break;
           }
           case "try-again": {
-            ok = await personalized.addSignal(session, Actions.TryAgain, contentId);
+            ok = await personalized.addSignal(session.sdkSession, Actions.TryAgain, contentId);
             break;
           }
           case "failed": {
-            ok = await personalized.addSignal(session, Actions.Failed, contentId);
+            ok = await personalized.addSignal(session.sdkSession, Actions.Failed, contentId);
             break;
           }
           default:
@@ -101,9 +148,9 @@ async function startServer() {
       },
       {
         body: t.Object({
-          signal: t.Union([t.Literal("solved"), t.Literal("try-again"), t.Literal("failed")]),
-          contentId: t.String(),
           sessionId: t.String(),
+          contentId: t.String(),
+          signal: t.Union([t.Literal("solved"), t.Literal("try-again"), t.Literal("failed")]),
         }),
       },
     )

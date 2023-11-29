@@ -1,6 +1,6 @@
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { DataRow, DataRowEmbedding } from "../types";
-import { dataToSummarizedString } from "./data";
+import { dataToString } from "./data";
 
 /** Using OpenAI, convert documents to embeddings.
  *
@@ -12,7 +12,7 @@ export async function dataToEmbeddings(data: DataRow[]) {
     openAIApiKey: API_KEY,
   });
 
-  const embeddings = await openai.embedDocuments(data.map((d) => dataToSummarizedString(d)));
+  const embeddings = await openai.embedDocuments(data.map((d) => dataToString(d)));
 
   const embedData: DataRowEmbedding[] = data.map((d, i) => ({
     id: d.id.toString(),

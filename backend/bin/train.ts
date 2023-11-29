@@ -1,4 +1,4 @@
-import { dataToSummarizedString, loadData } from "../util/data";
+import { dataToString, loadData } from "../util/data";
 import { connectPinecone } from "../util/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
@@ -7,7 +7,7 @@ import type { DataRow, DataRowMetadata } from "../types";
 if (import.meta.main) {
   console.log("Loading & parsing CSV data...");
   const data: DataRow[] = await loadData("./data/leetcode_questions.csv");
-  const dataStrings: string[] = data.map((d) => dataToSummarizedString(d));
+  const dataStrings: string[] = data.map((d) => dataToString(d));
   const dataMetadatas: DataRowMetadata[] = data.map((d) => ({
     difficulty: d.difficulty,
     topics: d.topics,

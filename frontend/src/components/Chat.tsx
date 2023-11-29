@@ -16,7 +16,7 @@ export default function ChatApp(props: { sessionId: string }) {
     setPrompt("");
 
     // send message to backend
-    promptChatBot(message).then((response) => {
+    promptChatBot(props.sessionId, message).then((response) => {
       setChatHistory((h) => [...h, response]);
     });
   };

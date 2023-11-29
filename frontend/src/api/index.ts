@@ -2,7 +2,11 @@ const BASE_URL = "http://localhost:8080";
 
 async function post(url: string, data: any, baseURL: string = BASE_URL) {
   const target = baseURL + url;
-  console.log("POST@\t", target);
+  console.log({
+    method: "POST",
+    url: target,
+    body: data,
+  });
   const response = await fetch(target, {
     method: "POST",
     headers: {
@@ -12,8 +16,11 @@ async function post(url: string, data: any, baseURL: string = BASE_URL) {
   });
 
   if (!response.ok) {
-    // TODO: error handling
-    alert(`${response.statusText} (${response.status}`);
+    alert(
+      `${target} ${response.statusText} (${
+        response.status
+      })\n${await response.text()}`
+    );
     throw new Error("Failed.");
   }
 
@@ -21,8 +28,11 @@ async function post(url: string, data: any, baseURL: string = BASE_URL) {
 }
 
 /** Calls the backend to make a prompt to the AI at backend. */
-export async function promptChatBot(prompt: string): Promise<string> {
-  const response = await post("/prompt", { prompt });
+export async function promptChatBot(
+  sessionId: string,
+  prompt: string
+): Promise<string> {
+  const response = await post("/prompt", { prompt, sessionId });
 
   return await response.text();
 }

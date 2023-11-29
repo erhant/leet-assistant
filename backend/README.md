@@ -10,6 +10,8 @@ To start the development server run:
 bun run dev
 ```
 
+It might take a bit of time at first due to FirstBatch setting up the database.
+
 ## Dataset
 
 The dataset here has been retrieved from <https://www.kaggle.com/datasets/manthansolanki/leetcode-questions/>. Download the dataset and place the CSV file in this directory. We use OpenAI and Pinecone to generate embeddings from the dataset and store them at Pinecone.
