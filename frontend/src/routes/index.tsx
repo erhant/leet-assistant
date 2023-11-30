@@ -11,6 +11,7 @@ export default function Home() {
     <main>
       <Title>Leet Assistant</Title>
 
+      {/* first we must start an SDK session */}
       <Show
         when={sessionId() !== ""}
         fallback={

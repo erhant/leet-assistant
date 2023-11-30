@@ -10,7 +10,7 @@ export async function setupFirstBatch(index: Index<DataRowMetadata>) {
   }
   const sdk = await FirstBatch.new(API_KEY, {
     quantizerType: "scalar",
-    batchSize: constants.FIRSTBATCH.BATCH_SIZE,
+    batchSize: constants.FIRSTBATCH.DEFAULT_BATCH_SIZE,
     verbose: true,
   });
 

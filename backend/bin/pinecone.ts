@@ -1,4 +1,4 @@
-import { connectPinecone } from "../util/pinecone";
+import { connectPinecone } from "../src/util/pinecone";
 
 if (import.meta.main) {
   console.log("Fetching information about Pinecone index:");

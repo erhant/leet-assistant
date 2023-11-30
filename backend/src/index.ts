@@ -1,164 +1,155 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { logger } from "@bogeychan/elysia-logger";
-import { setupRAG } from "../util/langchain";
-import { Signal, UserAction } from "firstbatch";
-import { setupFirstBatch } from "../util/firstbatch";
-import constants from "../constants";
-import { SessionType } from "../types";
-import { connectPinecone } from "../util/pinecone";
+import chalk from "chalk";
 
-const ErrInvalidSession = new Error("Invalid session.");
+import constants from "./constants";
+import errors from "./errors";
+import { format, setupPrerequisites } from "./util/";
+import { tSignalType, type DataRowMetadataResponse, type SessionType, type SignalType } from "./types";
 
-const Actions = {
-  Solved: new UserAction(new Signal("SOLVED", 1.2)),
-  TryAgain: new UserAction(new Signal("TRY_AGAIN", 1.2)),
-  Failed: new UserAction(new Signal("FAILED", 1.2)),
-};
-
-async function startServer() {
-  console.log("Setting up LangChain.");
-  const { chain } = await setupRAG();
-  console.log("Connecting to Pinecone.");
-  const index = await connectPinecone();
-  console.log("Setting up FirstBatch SDK.");
-  const personalized = await setupFirstBatch(index);
-
-  console.log("FirstBatch TeamID:", personalized.teamId);
+export async function startServer() {
+  const { chain, index, personalized } = await setupPrerequisites();
 
   const app = new Elysia()
     ///////////////  plugins  \\\\\\\\\\\\\\\
     .use(cors())
-    .use(logger({ level: "debug" }))
+    .use(
+      logger({
+        level: "debug",
+        transport: {
+          target: "pino-pretty",
+          options: { colorize: true, sync: true },
+        },
+      }),
+    )
     ///////////////   state   \\\\\\\\\\\\\\\
     .state("sessions", {} as SessionType)
-    // .onError(({ code, error, log }) => {
-    //   log.error({ code, error: error.toString() });
-    //   return new Response(error.toString());
-    // })
     /////////////// endpoints \\\\\\\\\\\\\\\
-    .post(
-      "/new-session",
-      // creates a new user embedding session
-      async ({ store: { sessions }, log }) => {
-        const session = await personalized.session("SIMPLE", constants.FIRSTBATCH.VECTORDB_ID, {
+    // creates a new user embedding session
+    .post("/new-session", async ({ store: { sessions } }) => {
+      const session = await personalized.session(
+        constants.FIRSTBATCH.ALGORITHM_NAME,
+        constants.FIRSTBATCH.VECTORDB_ID,
+        {
           customId: constants.FIRSTBATCH.ALGORITHM_ID,
-        });
-        sessions[session.id] = {
-          sdkSession: session,
-          chatHistory: [],
-        };
+        },
+      );
+      sessions[session.id] = {
+        sdkSession: session,
+        chatHistory: [],
+      };
 
-        log.info("Created session:", session.id);
-        return { sessionId: session.id };
-      },
-    )
+      console.log(chalk.gray("Created session:", session.id));
+      return { sessionId: session.id };
+    })
+    // returns the user session
     .post(
       "/get-session",
-      // returns the user session
       ({ body: { sessionId }, store: { sessions } }) => {
         if (!(sessionId in sessions)) {
-          return ErrInvalidSession;
+          throw errors.InvalidSession;
         }
         const session = sessions[sessionId];
         return { session };
       },
       { body: t.Object({ sessionId: t.String() }) },
     )
+    // chatgpt integration with RAG
     .post(
       "/prompt",
-      // simple ChatGPT integration with RAG
       async ({ body: { prompt, sessionId }, store: { sessions } }) => {
         if (!(sessionId in sessions)) {
-          console.log("invalid session");
-          return ErrInvalidSession;
+          throw errors.InvalidSession;
         }
         const session = sessions[sessionId];
-        try {
-          const context = await personalized.batch(session.sdkSession, {
-            batchSize: 10,
-          });
-          console.log(context);
-        } catch (err) {
-          console.error(err);
-          throw err;
-        }
+
+        // TODO: should this be done once and used again for each prompt?
+        const [ids, metadata] = await personalized.batch(session.sdkSession, {
+          batchSize: constants.FIRSTBATCH.PROMPT_BATCH_SIZE,
+        });
 
         const response = await chain.invoke({
           chatHistory: session.chatHistory,
-          context: [],
-          question: prompt,
+          context: metadata as unknown as DataRowMetadataResponse[],
+          prompt,
         });
 
         // store the response in user history
-        session.chatHistory.push([prompt, response]);
-
+        session.chatHistory.push([format.prompt(prompt), response]);
         return response;
       },
       {
         body: t.Object({
-          prompt: t.String(),
+          prompt: t.Union([t.Literal("describe"), t.Literal("consult")]),
           sessionId: t.String(),
         }),
       },
     )
+    // signals a navigation within the user embeddings space
     .post(
-      "/batch",
-      // returns a new item from the dataset w.r.t user embeddings
-      async ({ body: { sessionId }, store: { sessions } }) => {
-        if (!(sessionId in sessions)) {
-          return ErrInvalidSession;
-        }
-
-        const batches = await personalized.batch(sessions[sessionId].sdkSession);
-        return { batches };
-      },
-      { body: t.Object({ sessionId: t.String() }) },
-    )
-    .post(
-      "/signal",
-      // signals a navigation within the user embeddings space
+      "/new-question",
       async ({ body: { signal, contentId, sessionId }, store: { sessions } }) => {
         if (!(sessionId in sessions)) {
-          return ErrInvalidSession;
+          throw errors.InvalidSession;
         }
         const session = sessions[sessionId];
+        const sdkSession = session.sdkSession;
 
         let ok = false;
+        signal satisfies SignalType;
         switch (signal) {
-          case "solved": {
-            ok = await personalized.addSignal(session.sdkSession, Actions.Solved, contentId);
+          case "solve": {
+            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.SOLVE, contentId);
             break;
           }
-          case "try-again": {
-            ok = await personalized.addSignal(session.sdkSession, Actions.TryAgain, contentId);
+          case "repeat": {
+            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.REPEAT, contentId);
             break;
           }
-          case "failed": {
-            ok = await personalized.addSignal(session.sdkSession, Actions.Failed, contentId);
+          case "fail": {
+            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.FAIL, contentId);
             break;
           }
+          // TODO: add signal to get back to initial phase
+          // case "reset": {
+          //   ok = await personalized.addSignal(session.sdkSession, Actions.BEGIN, contentId);
+          //   break;
+          // }
           default:
             // Elysia validates stuff so we dont expect to get here anyway
             signal satisfies never;
-            return new Error("Unknown signal.");
+            throw errors.InvalidSignal;
+        }
+        if (!ok) {
+          // could be due to invalid session id / content id or something?
+          throw errors.AddSignalFailed;
         }
 
-        return ok;
+        // get some new questions with the updated state
+        const batch = await personalized.batch(sdkSession);
+        return { batch };
       },
       {
         body: t.Object({
           sessionId: t.String(),
           contentId: t.String(),
-          signal: t.Union([t.Literal("solved"), t.Literal("try-again"), t.Literal("failed")]),
+          signal: tSignalType,
         }),
       },
     )
+    // .on("stop", ({ log }) => {
+    //   log.info("Gracefully shutting down.");
+    // })
     .listen(Bun.env.ELYSIA_PORT || 8080);
 
   return app;
 }
 
-startServer().then((app) => {
-  console.log(`Listening at ${app.server?.hostname}:${app.server?.port}`);
-});
+export type ServerType = Awaited<ReturnType<typeof startServer>>;
+
+if (import.meta.main) {
+  startServer().then((app) => {
+    console.log(chalk.green(`Listening at ${app.server?.hostname}:${app.server?.port}\n`));
+  });
+}

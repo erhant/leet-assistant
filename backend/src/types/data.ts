@@ -38,9 +38,12 @@ export interface RawDataRow {
 }
 
 /** Metadata stored within the vector store along with id and embeddings. */
-export type DataRowMetadata = Pick<DataRow, "difficulty" | "topics"> & {
-  id: RecordId;
-};
+export type DataRowMetadata = Pick<DataRow, "difficulty" | "topics">;
+export type DataRowMetadataResponse = DataRowMetadata & { text: string };
 
 /** A data row for Pinecone, along with embeddings. */
-export type DataRowEmbedding = PineconeRecord<DataRowMetadata>;
+export type DataRowEmbedding = PineconeRecord<
+  DataRowMetadata & {
+    id: RecordId;
+  }
+>;

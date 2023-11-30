@@ -1,8 +1,8 @@
-import { dataToString, loadData } from "../util/data";
-import { connectPinecone } from "../util/pinecone";
+import { dataToString, loadData } from "../src/util/data";
+import { connectPinecone } from "../src/util/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import type { DataRow, DataRowMetadata } from "../types";
+import type { DataRow, DataRowMetadata } from "../src/types";
 
 if (import.meta.main) {
   console.log("Loading & parsing CSV data...");
@@ -21,10 +21,10 @@ if (import.meta.main) {
 
   const pinecone = await connectPinecone();
 
-  // FIXME: batching was done because I kept getting 503 error code,
+  // NOTE: batching was done because I kept getting 503 error code,
   // but it turns out that Openai was down instead (https://status.openai.com/)
   //
-  // we might not batching at all
+  // we might not need batching at all
   const batchSize = 50;
   for (let i = 0; i < dataStrings.length; i += batchSize) {
     console.log(`\t[${i}/${dataStrings.length}]`);
