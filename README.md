@@ -7,7 +7,7 @@
 
 ## Usage
 
-When you connect to `URL_HERE`, you will be greeted with a conversation screen where you talk about algorithm topics with a bot.
+When you connect to the website, you will be greeted with a conversation screen where you talk about algorithm topics with a bot.
 
 1. Speak about the topics that you would like to try yourself on, or that you feel weak about.
 2. When you are done, click `BEGIN` button, which will initiate a problem-solving session with the information gained so far.

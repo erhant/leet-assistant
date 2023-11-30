@@ -2,7 +2,7 @@ import { For, Ref, createSignal } from "solid-js";
 import { promptChatBot } from "~/api";
 import "./Chat.scss";
 
-export default function ChatApp() {
+export default function ChatApp(props: { sessionId: string }) {
   const [prompt, setPrompt] = createSignal("");
   const [chatHistory, setChatHistory] = createSignal<string[]>([]);
 
@@ -16,7 +16,7 @@ export default function ChatApp() {
     setPrompt("");
 
     // send message to backend
-    promptChatBot(message).then((response) => {
+    promptChatBot(props.sessionId, message).then((response) => {
       setChatHistory((h) => [...h, response]);
     });
   };
