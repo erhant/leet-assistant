@@ -1,6 +1,6 @@
 import { Show, createResource, createSignal } from "solid-js";
 import { Title } from "solid-start";
-import { createSession } from "~/api";
+import backend from "~/api/backend";
 import ChatApp from "~/components/Chat";
 
 export default function Home() {
@@ -17,8 +17,12 @@ export default function Home() {
         fallback={
           <button
             onClick={() => {
-              createSession().then((sessionId) => {
-                setSessionId(sessionId);
+              backend["new-session"].post().then((response) => {
+                if (response.status === 200 && response.data) {
+                  setSessionId(response.data.sessionId);
+                } else {
+                  alert(response.status);
+                }
               });
             }}
           >
