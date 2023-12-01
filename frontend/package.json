@@ -9,16 +9,18 @@
   },
   "type": "module",
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/node": "*",
     "autoprefixer": "^10.4.15",
+    "bun-types": "*",
+    "daisyui": "^4.4.17",
+    "elysia": "*",
     "postcss": "^8.4.28",
+    "prettier": "*",
     "solid-start-node": "^0.3.10",
     "tailwindcss": "^3.3.3",
-    "vite": "^4.4.9",
-    "@types/node": "*",
-    "bun-types": "*",
-    "prettier": "*",
     "typescript": "*",
-    "elysia": "*"
+    "vite": "^4.4.9"
   },
   "dependencies": {
     "@solidjs/meta": "^0.29.1",

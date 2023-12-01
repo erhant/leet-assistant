@@ -1,8 +1,13 @@
 import { For, createSignal } from "solid-js";
 import backend from "~/api/backend";
-import "./Chat.scss";
+import Question from "./Question";
 
-export default function ChatApp(props: { sessionId: string }) {
+/**
+ *
+ * @param props session id for the backend
+ * @returns
+ */
+export default function Session(props: { sessionId: string }) {
   const [prompt, setPrompt] = createSignal("");
   const [chatHistory, setChatHistory] = createSignal<string[]>([]);
 
@@ -32,8 +37,14 @@ export default function ChatApp(props: { sessionId: string }) {
   };
 
   return (
-    <div class="chat-container">
-      <div class="chat-area">
+    <div class="container mx-auto py-10">
+      {/* questions */}
+      <div class="grid grid-cols-4">
+        <Question slug="ehe" title="ehe" />
+      </div>
+
+      {/* chat screen with the bot */}
+      <div>
         <For each={chatHistory()}>
           {(message, i) => (
             <div class={i() % 2 == 0 ? "message-human" : "message-assistant"}>
@@ -42,24 +53,6 @@ export default function ChatApp(props: { sessionId: string }) {
           )}
         </For>
       </div>
-      <div class="input-area">
-        <input
-          onChange={(e) => {
-            setPrompt(e.currentTarget.value);
-            e.currentTarget.value = "";
-          }}
-          type="text"
-          class="chat-input"
-        />
-        <button class="send-button" onClick={sendMessage}>
-          Send
-        </button>
-      </div>
-
-      <button onClick={() => alert("todo")}>
-        {/* this button should create a session with backend and start the SDK stuff there */}
-        Begin
-      </button>
     </div>
   );
 }

@@ -1,35 +1,25 @@
 import { Show, createSignal } from "solid-js";
-import { Title } from "solid-start";
-import backend from "~/api/backend";
-import ChatApp from "~/components/Chat";
+
+import Session from "~/components/Session";
+import Greeting from "~/components/Greeting";
 
 export default function Home() {
-  const [response, setResponse] = createSignal("");
+  // const [sessionId, setSessionId] = createSignal("todo-remove-me");
   const [sessionId, setSessionId] = createSignal("");
 
   return (
-    <main class="text-center mx-auto text-gray-700 p-4">
-      {/* first we must start an SDK session */}
+    <main>
       <Show
         when={sessionId() !== ""}
-        fallback={
-          <button
-            onClick={() => {
-              backend["new-session"].post().then((response) => {
-                if (response.status === 200 && response.data) {
-                  setSessionId(response.data.sessionId);
-                } else {
-                  alert(response.status);
-                }
-              });
-            }}
-          >
-            Start Session
-          </button>
-        }
+        fallback={<Greeting setSessionId={setSessionId} />}
       >
-        <ChatApp sessionId={sessionId()} />
+        <Session sessionId={sessionId()} />
       </Show>
+      {/* <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+        <div>
+          <p>{"© 2023 - erhant"}</p>
+        </div>
+      </footer> */}
     </main>
   );
 }
