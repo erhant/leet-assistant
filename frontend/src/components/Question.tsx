@@ -1,5 +1,5 @@
 import { For, Ref, createSignal } from "solid-js";
-import { promptChatBot } from "~/api";
+import { promptChatBot } from "~/api/backend";
 
 export default function Question(props: { title: string; slug: string }) {
   const url = `https://leetcode.com/problems/${props.slug}/`;

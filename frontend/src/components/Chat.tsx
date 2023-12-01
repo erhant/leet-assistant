@@ -1,5 +1,5 @@
 import { For, Ref, createSignal } from "solid-js";
-import { promptChatBot } from "~/api";
+import backend from "~/api/backend";
 import "./Chat.scss";
 
 export default function ChatApp(props: { sessionId: string }) {
@@ -16,9 +16,15 @@ export default function ChatApp(props: { sessionId: string }) {
     setPrompt("");
 
     // send message to backend
-    promptChatBot(props.sessionId, message).then((response) => {
-      setChatHistory((h) => [...h, response]);
-    });
+    backend.prompt
+      .post({
+        prompt: "describe", // TODO: take from UI
+        sessionId: props.sessionId,
+      })
+      .then(({ data, status }) => {
+        // TODO: check status
+        if (data) setChatHistory((h) => [...h, data]);
+      });
   };
 
   return (
