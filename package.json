@@ -2,6 +2,7 @@
   "name": "leetasst",
   "private": true,
   "author": "erhant",
+  "license": "MIT",
   "workspaces": [
     "backend",
     "frontend"

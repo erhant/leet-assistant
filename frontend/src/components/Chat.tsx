@@ -1,4 +1,4 @@
-import { For, Ref, createSignal } from "solid-js";
+import { For, createSignal } from "solid-js";
 import backend from "~/api/backend";
 import "./Chat.scss";
 
@@ -21,9 +21,13 @@ export default function ChatApp(props: { sessionId: string }) {
         prompt: "describe", // TODO: take from UI
         sessionId: props.sessionId,
       })
-      .then(({ data, status }) => {
+      .then(({ data, status, error }) => {
         // TODO: check status
-        if (data) setChatHistory((h) => [...h, data]);
+        if (status !== 200 || data === null) {
+          console.error({ error, status });
+        } else {
+          setChatHistory((h) => [...h, data]);
+        }
       });
   };
 
@@ -32,7 +36,7 @@ export default function ChatApp(props: { sessionId: string }) {
       <div class="chat-area">
         <For each={chatHistory()}>
           {(message, i) => (
-            <div class={i() % 2 == 0 ? "message-prompt" : "message-response"}>
+            <div class={i() % 2 == 0 ? "message-human" : "message-assistant"}>
               {message}
             </div>
           )}

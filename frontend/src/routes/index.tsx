@@ -1,4 +1,4 @@
-import { Show, createResource, createSignal } from "solid-js";
+import { Show, createSignal } from "solid-js";
 import { Title } from "solid-start";
 import backend from "~/api/backend";
 import ChatApp from "~/components/Chat";
@@ -8,9 +8,7 @@ export default function Home() {
   const [sessionId, setSessionId] = createSignal("");
 
   return (
-    <main>
-      <Title>Leet Assistant</Title>
-
+    <main class="text-center mx-auto text-gray-700 p-4">
       {/* first we must start an SDK session */}
       <Show
         when={sessionId() !== ""}
@@ -35,9 +33,3 @@ export default function Home() {
     </main>
   );
 }
-
-/**
- * 2
- * V  >2
- * >>>^
- */
