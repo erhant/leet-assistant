@@ -8,7 +8,7 @@ export interface DataRow {
   slug: string;
   description: string;
   topics: string[];
-  difficulty: string;
+  difficulty: "Easy" | "Medium" | "Hard";
   successRate: number;
   submissions: number;
   accepteds: number;

@@ -1,10 +1,11 @@
 import IconOutbound from "~/icons/outbound";
+import { QuestionType } from "~/types";
 
-export default function Question(props: { title: string; slug: string }) {
-  const url = `https://leetcode.com/problems/${props.slug}/`;
+export default function Question(props: { question: QuestionType }) {
+  const url = `https://leetcode.com/problems/${props.question.slug}/`;
   return (
     <div class="container mx-auto">
-      <h3 class="question-title">{props.title}</h3>
+      <h3 class="question-title">{props.question.title}</h3>
       <a role="button" class="btn btn-primary" href={url} target="_blank">
         Solve Problem <IconOutbound />
       </a>

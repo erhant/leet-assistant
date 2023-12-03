@@ -19,7 +19,7 @@ export async function loadData(path: string): Promise<DataRow[]> {
           slug: row["Question Slug"],
           description: row["Question Text"],
           topics: row["Topic Tagged text"].split(","),
-          difficulty: row["Difficulty Level"],
+          difficulty: row["Difficulty Level"] as DataRow["difficulty"],
           successRate: parseFloat(row["Success Rate"]),
           submissions: parseInt(row["total submission"]),
           accepteds: parseInt(row["total accepted"]),
