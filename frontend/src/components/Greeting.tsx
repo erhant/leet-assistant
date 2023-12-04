@@ -1,18 +1,20 @@
-import { Setter, createEffect, createSignal, onCleanup } from "solid-js";
-import { newSession } from "~/api/backend";
+import { createSignal, onCleanup } from "solid-js";
 
 /** Tiny visual flare to randomly return LEET or 1337, or something in between. */
 function randomLeet() {
-  const f = () => Math.random() < 0.5;
-
-  return `${f() ? "L" : "1"}${f() ? "E" : "3"}${f() ? "E" : "3"}${f() ? "T" : "7"}`;
+  return [
+    ["L", "1"],
+    ["E", "3"],
+    ["E", "3"],
+    ["T", "7"],
+  ].reduce((acc, cur) => acc + cur[Math.round(Math.random())], "");
 }
 
 /**
  * Greets the user with a title & message, and has a button to start a session.
  * @param props a Setter to update the session id
  */
-export default function Greeting(props: { setSessionId: Setter<string> }) {
+export default function Greeting(props: { newSession: () => Promise<void> }) {
   const [leetTitle, setLeetTitle] = createSignal("LEET");
   const [isLoading, setIsLoading] = createSignal(false);
 
@@ -21,10 +23,10 @@ export default function Greeting(props: { setSessionId: Setter<string> }) {
 
   async function handleClick() {
     setIsLoading(true);
-    const sessionId = await newSession();
-    props.setSessionId(sessionId);
+    await props.newSession();
     setIsLoading(false);
   }
+
   return (
     <div class="hero min-h-screen bg-base-200">
       <div class="hero-content text-center">

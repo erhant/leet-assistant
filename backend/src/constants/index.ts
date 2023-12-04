@@ -17,7 +17,7 @@ export default {
   /** User actions for FirstBatch SDK. */
   ACTIONS: {
     SOLVE: new UserAction(new Signal("SOLVE", 1.2)),
-    REPEAT: new UserAction(new Signal("REPEAT", 1.2)),
+    RETRY: new UserAction(new Signal("RETRY", 1.2)),
     FAIL: new UserAction(new Signal("FAIL", 1.2)),
   },
 } as const;

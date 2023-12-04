@@ -12,7 +12,9 @@ export default function QuestionView(props: {
   return (
     <div class="flex flex-col center gap-2">
       <h1 class="text-xl text-center m-2">{props.question.title}</h1>
-      <QuestionBadges question={props.question} />
+      <div class="my-2">
+        <QuestionBadges question={props.question} />
+      </div>
 
       <p>{props.question.description}</p>
       <a role="button" class="btn btn-primary" href={url} target="_blank">

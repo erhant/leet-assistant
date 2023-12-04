@@ -39,3 +39,15 @@ export async function makeSignal(sessionId: string, contentId: string, signal: "
     throw new Error(response.error?.name);
   }
 }
+
+export async function makePrompt(sessionId: string, prompt: "describe" | "consult") {
+  const response = await backend["prompt"].post({
+    sessionId,
+    prompt,
+  });
+  if (response.status === 200 && response.data !== null) {
+    return response.data; // response as a string
+  } else {
+    throw new Error(response.error?.name);
+  }
+}

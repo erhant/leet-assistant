@@ -77,8 +77,9 @@ export async function startServer() {
         });
 
         // store the response in user history
+        const userPromptFormatted = format.prompt(prompt);
         session.chatHistory.push([format.prompt(prompt), response]);
-        return response;
+        return [userPromptFormatted, response] as const;
       },
       {
         body: t.Object({
@@ -119,18 +120,13 @@ export async function startServer() {
             break;
           }
           case "retry": {
-            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.REPEAT, contentId);
+            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.RETRY, contentId);
             break;
           }
           case "fail": {
             ok = await personalized.addSignal(sdkSession, constants.ACTIONS.FAIL, contentId);
             break;
           }
-          // TODO: add signal to get back to initial phase
-          // case "reset": {
-          //   ok = await personalized.addSignal(session.sdkSession, Actions.BEGIN, contentId);
-          //   break;
-          // }
           default:
             // Elysia validates stuff so we dont expect to get here anyway
             signal satisfies never;

@@ -1,19 +1,24 @@
-import { For, Show, createSignal, onMount } from "solid-js";
+import { For, Setter, Show, createSignal, onMount } from "solid-js";
 import QuestionView from "./QuestionView";
 import type { QuestionBatch } from "~/types";
 import QuestionCard from "./QuestionCard";
-import { getDummyQuestions } from "~/api/dummy";
+import { getDummyChatHistory, getDummyQuestions } from "~/api/dummy";
 import { getQuestions } from "~/api/backend";
+import ChatScreen from "./ChatScreen";
 
 /**
  * Within a session, we see a batch of questions along with a chat bot where we can
  * ask specific questions to the chat bot.
  * @param props session id for the backend
  */
-export default function Session(props: { sessionId: string }) {
-  const [chatHistory, setChatHistory] = createSignal<string[]>([]);
+export default function Session(props: { sessionId: string; resetSession: () => Promise<void> }) {
+  const [chatHistory, setChatHistory] = createSignal<string[]>(getDummyChatHistory());
   const [isLoading, setIsLoading] = createSignal(true);
   const [questions, setQuestions] = createSignal<QuestionBatch[1]>([]); // );
+
+  // chat modal stuff
+  const chatModalId = "chatmodalrag";
+  let chatModalRef: HTMLDialogElement;
 
   async function refreshQuestions() {
     setIsLoading(true);
@@ -22,10 +27,20 @@ export default function Session(props: { sessionId: string }) {
     setIsLoading(false);
   }
 
+  async function reset() {
+    setIsLoading(true);
+    await props.resetSession();
+    setChatHistory([]);
+    await refreshQuestions();
+    setIsLoading(false);
+  }
+
+  // FIXME: this should be uncommened on live
   // onMount(refreshQuestions);
 
   return (
     <div class="container mx-auto p-10 my-5">
+      {/* question cards */}
       <div class="grid my-2 grid-cols-4 gap-x-4 gap-y-6">
         <Show
           when={!isLoading()}
@@ -39,26 +54,30 @@ export default function Session(props: { sessionId: string }) {
         </Show>
       </div>
 
-      {/* chat screen with the bot */}
-      {/* <div>
-        <For each={chatHistory()}>
-          {(message, i) => (
-            <div class={i() % 2 == 0 ? "message-human" : "message-assistant"}>
-              {message}
-            </div>
-          )}
-        </For>
-      </div> */}
-      <div class="flex flex-row center mx-auto gap-x-4">
-        <button class="btn btn-neutral" onClick={() => refreshQuestions()}>
+      {/* controls */}
+      <div class="flex flex-row center mx-auto my-4 gap-x-4">
+        <button class="btn btn-neutral btn-outline" onClick={() => refreshQuestions()}>
           Refresh
         </button>
-        <button class="btn btn-neutral" onClick={() => alert("this should reset user embeddings")}>
+        <button class="btn btn-neutral btn-outline" onClick={() => reset()}>
           Reset
         </button>
-        <button class="btn btn-neutral" onClick={() => alert("this should open a chat drawer")}>
+
+        {/* this is a button along with a chat dialog modal */}
+        <button class="btn btn-neutral btn-outline" onClick={() => chatModalRef.showModal()}>
           Chat
         </button>
+        <dialog
+          id={chatModalId}
+          class="modal"
+          // @ts-expect-error
+          ref={chatModalRef}
+        >
+          <ChatScreen sessionId={props.sessionId} chatHistory={chatHistory()} />
+          <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
       </div>
     </div>
   );

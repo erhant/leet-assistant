@@ -1,5 +1,9 @@
 import type { Question } from "~/types";
 
+export function getDummyChatHistory(): string[] {
+  return ["Hi there!", "Hello.", "Isnt this a sunny day?", "Seems to be so.", "Uh-huh."];
+}
+
 export function getDummyQuestions(): Question[] {
   return [
     {
