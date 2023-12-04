@@ -1,21 +1,17 @@
-import { Index, Pinecone } from "@pinecone-database/pinecone";
-import { QuestionPineconeRecord, Question } from "../types";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { Question } from "../types";
+import constants from "../constants";
 
-/** Connects to an existing Pinecone index.
- *
- * @param indexName index name, defaults to `leetasst`
- * @param environment environment name, defaults to `gcp-starter`
- */
-export async function connectPinecone(indexName = "leetasst", environment = "gcp-starter") {
-  const API_KEY = Bun.env.PINECONE_API_KEY;
-  if (!API_KEY) {
+/** Connects to the Pinecone index for Leet Assistant. */
+export async function connectPinecone() {
+  if (!constants.PINECONE.API_KEY) {
     throw new Error("No Pinecone API key!");
   }
 
   const pinecone = new Pinecone({
-    environment: environment,
-    apiKey: API_KEY,
+    environment: constants.PINECONE.ENVIRONMENT,
+    apiKey: constants.PINECONE.API_KEY,
   });
 
-  return pinecone.Index<Question>(indexName);
+  return pinecone.Index<Question>(constants.PINECONE.INDEX_NAME);
 }

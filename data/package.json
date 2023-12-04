@@ -1,9 +1,18 @@
 {
   "name": "data",
+  "private": true,
+  "author": "erhant",
+  "license": "MIT",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "questions": "bun run ./src/questions.ts",
+    "pinecone": "bun run ./src/pinecone.ts"
+  },
   "dependencies": {
-    "csv-parser": "^3.0.0"
+    "csv-parser": "^3.0.0",
+    "@pinecone-database/pinecone": "*",
+    "langchain": "*"
   },
   "prettier": {
     "printWidth": 120

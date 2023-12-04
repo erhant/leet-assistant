@@ -1,7 +1,4 @@
-import type { PineconeRecord, RecordMetadata } from "@pinecone-database/pinecone";
-import type { RecordId } from "@pinecone-database/pinecone";
-
-/** A parsed row. */
+/** A parsed question, also used as a metadata. */
 export type Question = {
   questionId: string;
   title: string;
@@ -19,26 +16,5 @@ export type Question = {
   similarQuestionsText: string[];
 };
 
-/** A raw question row from the CSV file. */
-export type QuestionRaw = {
-  "Question ID": string;
-  "Question Title": string;
-  "Question Slug": string;
-  "Question Text": string;
-  "Topic Tagged text": string;
-  "Difficulty Level": string;
-  "Success Rate": string;
-  "total submission": string;
-  "total accepted": string;
-  Likes: string;
-  Dislikes: string;
-  Hints: string;
-  "Similar Questions ID": string;
-  "Similar Questions Text": string;
-};
-
 /** Metadata stored within the vector store along with id and embeddings. */
 export type DataRowMetadataResponse = Question & { text: string };
-
-/** A data row for Pinecone, along with embeddings. */
-export type QuestionPineconeRecord = PineconeRecord<Question>;

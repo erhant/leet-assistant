@@ -1,15 +1,24 @@
-# data
+# Leet Assistant - Data Training
 
-To install dependencies:
+Install dependencies:
 
 ```bash
 bun install
 ```
 
-To run:
+## Usage
+
+We provide some scripts within [package.json](./package.json).
 
 ```bash
-bun run index.ts
+# Print random questions
+bun run questions
+
+# Print Pinecone index information
+bun run pinecone
+
+# Print Pinecone index information
+bun run pinecone
 ```
 
 This project was created using `bun init` in bun v1.0.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

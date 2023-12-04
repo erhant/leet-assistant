@@ -3,7 +3,7 @@ import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
 import { StringOutputParser } from "langchain/schema/output_parser";
 import errors from "../errors";
-import type { PromptInputType } from "../types/prompt";
+import type { PromptInputType } from "../types";
 
 /**
  * Sets up the LLM for RAG. Returns all intermediate objects, but you will most likely

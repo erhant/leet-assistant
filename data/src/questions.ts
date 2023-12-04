@@ -1,6 +1,6 @@
 import fs from "fs";
 import csv from "csv-parser";
-import type { Question, QuestionRaw } from "../types";
+import type { Question, QuestionRaw } from "./types";
 
 /** Placeholder for a question context, should mention this to GPT. */
 const PLACEHOLDER = "none";
@@ -46,9 +46,26 @@ export async function loadQuestions(path: string): Promise<Question[]> {
 /** Converts a data row to a single string. */
 export function questionToString(data: Question): string {
   const similar = data.similarQuestionsText.join(",");
-  return `Question: ${data.title}
-Description: ${data.description ? PLACEHOLDER : data.description}
-Difficulty: ${data.difficulty}
-Topics: ${data.topics.length === 0 ? PLACEHOLDER : data.topics.join(",")}
-Similar Questions: ${similar.length === 0 ? PLACEHOLDER : similar}`;
+  return [
+    `Question: ${data.title}`,
+    `Description: ${data.description || PLACEHOLDER}`,
+    `Difficulty: ${data.difficulty}`,
+    `Topics: ${data.topics.length === 0 ? PLACEHOLDER : data.topics.join(",")}`,
+    `Similar Questions: ${similar.length === 0 ? PLACEHOLDER : similar}`,
+  ].join("\n");
+}
+
+if (import.meta.main) {
+  console.log("Printing random questions.");
+  const COUNT = 8;
+  const questions: Question[] = await loadQuestions("./res/leetcode_questions.csv");
+
+  const randomQuestions = Array.from({ length: COUNT }, () => {
+    const question = questions[Math.floor(Math.random() * questions.length)];
+    return {
+      ...question,
+      // text: questionToString(question),
+    };
+  });
+  console.log(randomQuestions);
 }

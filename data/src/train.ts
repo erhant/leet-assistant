@@ -1,8 +1,8 @@
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { connectPinecone } from "./pinecone";
-import { loadQuestions, questionToString } from "./question";
-import { Question } from "../types";
+import { loadQuestions, questionToString } from "./questions";
+import { Question } from "./types";
 
 if (import.meta.main) {
   console.log("Loading & parsing CSV data...");

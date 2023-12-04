@@ -1,5 +1,3 @@
-import type { PineconeRecord } from "@pinecone-database/pinecone";
-
 /** A parsed question, also used as a metadata. */
 export type Question = {
   questionId: string;
@@ -35,6 +33,3 @@ export type QuestionRaw = {
   "Similar Questions ID": string;
   "Similar Questions Text": string;
 };
-
-/** A data row for Pinecone, along with embeddings. */
-export type QuestionPineconeRecord = PineconeRecord<Question>;

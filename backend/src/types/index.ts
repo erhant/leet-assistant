@@ -1,4 +1,37 @@
 export type * from "./question";
-export { type PromptInputType, type PromptType, tPromptType } from "./prompt";
-export { type SignalType, tSignalType } from "./signal";
-export type * from "./session";
+
+import type { SessionObject } from "firstbatch";
+import { t } from "elysia";
+import type { DataRowMetadataResponse } from "../types";
+
+/** A user prompt. */
+export type PromptType =
+  // describes the user's state right now with the questions solved and such.
+  | "describe"
+  // provides consultation for the user, offering topics to study etc.
+  | "consult";
+
+/** {@link PromptType} using Elysia's `t`. */
+export const tPromptType = t.Union([t.Literal("describe"), t.Literal("consult")]);
+
+/** A user action signal. */
+export type SignalType = "solve" | "repeat" | "fail";
+
+/** {@link SignalType} using Elysia's `t`. */
+export const tSignalType = t.Union([t.Literal("solve"), t.Literal("repeat"), t.Literal("fail")]);
+
+/** A conversational RAG input. */
+export type PromptInputType = {
+  prompt: PromptType;
+  chatHistory: [string, string][];
+  context: DataRowMetadataResponse[];
+};
+
+/** A user session. The key is sessionId. */
+export type SessionType = Record<
+  string,
+  {
+    sdkSession: SessionObject;
+    chatHistory: [string, string][];
+  }
+>;
