@@ -51,7 +51,13 @@ describe("create a session", () => {
     });
   });
 
-  describe.todo("signal", () => {});
+  describe.todo("signal", () => {
+    it("should signal 'retry'", async () => {});
+
+    it("should signal 'retry'", async () => {});
+
+    it("should signal 'retry'", async () => {});
+  });
 
   describe.skip("prompt", () => {
     it("should get a 'describe' prompt", async () => {

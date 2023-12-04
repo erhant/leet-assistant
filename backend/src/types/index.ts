@@ -19,10 +19,10 @@ export type PromptType =
 export const tPromptType = t.Union([t.Literal("describe"), t.Literal("consult")]);
 
 /** A user action signal. */
-export type SignalType = "solve" | "repeat" | "fail";
+export type SignalType = "solve" | "retry" | "fail";
 
 /** {@link SignalType} using Elysia's `t`. */
-export const tSignalType = t.Union([t.Literal("solve"), t.Literal("repeat"), t.Literal("fail")]);
+export const tSignalType = t.Union([t.Literal("solve"), t.Literal("retry"), t.Literal("fail")]);
 
 /** A conversational RAG input. */
 export type PromptInputType = {
@@ -32,10 +32,9 @@ export type PromptInputType = {
 };
 
 /** A user session. The key is sessionId. */
-export type SessionType = Record<
-  string,
-  {
+export type SessionType = {
+  [SessionId: string]: {
     sdkSession: SessionObject;
     chatHistory: [string, string][];
-  }
->;
+  };
+};

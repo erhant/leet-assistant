@@ -21,3 +21,10 @@ bun install
 ```
 
 and the dependencies will be installed for all workspaces described above.
+
+> [!NOTE]
+>
+> There are two particular type-sharing that is used here:
+>
+> - [Frontend](./frontend/) workspace imports the ElysiaJS server type from [Backend](./backend/) workspace and creates a type-safe client via Eden Treaty.
+> - All workspaces share the `Question` type as exposed from within the [Data](./data/) workspace.

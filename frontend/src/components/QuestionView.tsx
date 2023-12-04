@@ -1,9 +1,14 @@
 import IconOutbound from "~/icons/Outbound";
 import { Question } from "~/types";
 import QuestionBadges from "./QuestionBadges";
+import { makeSignal } from "~/api/backend";
 
-export default function QuestionView(props: { question: Question }) {
+export default function QuestionView(props: {
+  question: Question;
+  handleSignal: (signal: "solve" | "retry" | "fail") => void;
+}) {
   const url = `https://leetcode.com/problems/${props.question.slug}/`;
+
   return (
     <div class="flex flex-col center gap-2">
       <h1 class="text-xl text-center m-2">{props.question.title}</h1>
@@ -33,9 +38,15 @@ export default function QuestionView(props: { question: Question }) {
         on your experience, Leet Assistant will try to bring more relevant questions for you.
       </p>
       <div class="flex flex-row gap-5 justify-center my-2">
-        <button class="btn btn-lg btn-success">Solved</button>
-        <button class="btn btn-lg btn-warning">Repeat</button>
-        <button class="btn btn-lg btn-error">Failed</button>
+        <button class="btn btn-lg btn-success" onClick={() => props.handleSignal("solve")}>
+          Solved
+        </button>
+        <button class="btn btn-lg btn-warning" onClick={() => props.handleSignal("retry")}>
+          Retry
+        </button>
+        <button class="btn btn-lg btn-error" onClick={() => props.handleSignal("fail")}>
+          Failed
+        </button>
       </div>
     </div>
   );

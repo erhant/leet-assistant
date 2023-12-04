@@ -24,6 +24,18 @@ export async function newSession() {
   }
 }
 
-export async function makeSignal() {
-  // TODO: make a signal
+export async function makeSignal(sessionId: string, contentId: string, signal: "retry" | "solve" | "fail") {
+  const response = await backend["signal"].post({
+    sessionId,
+    contentId,
+    signal,
+  });
+  if (response.status === 200 && response.data !== null) {
+    if (!response.data) {
+      // something went wrong?
+      throw new Error("Could not add signal.");
+    }
+  } else {
+    throw new Error(response.error?.name);
+  }
 }

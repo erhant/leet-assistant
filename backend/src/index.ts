@@ -25,6 +25,8 @@ export async function startServer() {
           options: { colorize: true, sync: true },
         },
       }),
+      // TODO: use Gingonic style logging?
+      // TIME | CODE | respTime | method /url
     )
     ///////////////   state   \\\\\\\\\\\\\\\
     .state("sessions", {} as SessionType)
@@ -116,7 +118,7 @@ export async function startServer() {
             ok = await personalized.addSignal(sdkSession, constants.ACTIONS.SOLVE, contentId);
             break;
           }
-          case "repeat": {
+          case "retry": {
             ok = await personalized.addSignal(sdkSession, constants.ACTIONS.REPEAT, contentId);
             break;
           }
@@ -134,10 +136,8 @@ export async function startServer() {
             signal satisfies never;
             throw errors.InvalidSignal;
         }
-        if (!ok) {
-          // could be due to invalid session id / content id or something?
-          throw errors.AddSignalFailed;
-        }
+
+        return ok;
       },
       {
         body: t.Object({
