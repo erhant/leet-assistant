@@ -9,10 +9,7 @@ export default function Home() {
 
   return (
     <main>
-      <Show
-        when={sessionId() !== ""}
-        fallback={<Greeting setSessionId={setSessionId} />}
-      >
+      <Show when={sessionId() !== ""} fallback={<Greeting setSessionId={setSessionId} />}>
         <Session sessionId={sessionId()} />
       </Show>
       {/* <footer class="footer footer-center p-4 bg-base-300 text-base-content">

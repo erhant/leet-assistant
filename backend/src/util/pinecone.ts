@@ -1,5 +1,5 @@
 import { Index, Pinecone } from "@pinecone-database/pinecone";
-import { DataRowEmbedding, DataRowMetadata } from "../types";
+import { QuestionPineconeRecord, Question } from "../types";
 
 /** Connects to an existing Pinecone index.
  *
@@ -17,13 +17,5 @@ export async function connectPinecone(indexName = "leetasst", environment = "gcp
     apiKey: API_KEY,
   });
 
-  return pinecone.Index<DataRowMetadata>(indexName);
-}
-
-/** Update records to Pinecone.
- *
- * @deprecated we are using `fromText` method of langchain's Pinecone instead.
- */
-export async function uploadPinecone(index: Index<DataRowMetadata>, data: DataRowEmbedding[]) {
-  await index.upsert(data);
+  return pinecone.Index<Question>(indexName);
 }

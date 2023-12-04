@@ -1,7 +1,6 @@
-import { Properties } from "solid-js/web";
 import { QuestionType } from "~/types";
 
-export default function QuestionSummary(props: { question: QuestionType }) {
+export default function QuestionCard(props: { question: QuestionType }) {
   return (
     <div class="card bg-neutral shadow-xl">
       <div class="card-body">

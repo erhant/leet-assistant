@@ -4,15 +4,16 @@ import { QuestionType } from "~/types";
 export default function Question(props: { question: QuestionType }) {
   const url = `https://leetcode.com/problems/${props.question.slug}/`;
   return (
-    <div class="container mx-auto">
-      <h3 class="question-title">{props.question.title}</h3>
+    <div class="flex flex-col center gap-2">
+      <h1 class="text-xl text-center m-2">{props.question.title}</h1>
       <a role="button" class="btn btn-primary" href={url} target="_blank">
-        Solve Problem <IconOutbound />
+        Solve Problem at LeetCode <IconOutbound />
       </a>
-      <div class="flex flex-row gap-p2">
-        <button class="btn btn-success">Solved</button>
-        <button class="btn btn-warning">Repeat</button>
-        <button class="btn btn-error">Failed</button>
+      <div class="divider">Actions</div>
+      <div class="flex flex-row gap-5 justify-center">
+        <button class="btn btn-lg btn-success">Solved</button>
+        <button class="btn btn-lg btn-warning">Repeat</button>
+        <button class="btn btn-lg btn-error">Failed</button>
       </div>
     </div>
   );

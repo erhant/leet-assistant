@@ -5,9 +5,7 @@ import backend from "~/api/backend";
 function randomLeet() {
   const f = () => Math.random() < 0.5;
 
-  return `${f() ? "L" : "1"}${f() ? "E" : "3"}${f() ? "E" : "3"}${
-    f() ? "T" : "7"
-  }`;
+  return `${f() ? "L" : "1"}${f() ? "E" : "3"}${f() ? "E" : "3"}${f() ? "T" : "7"}`;
 }
 
 /**
@@ -39,19 +37,14 @@ export default function Greeting(props: { setSessionId: Setter<string> }) {
           <h1 class="text-8xl font-bold hover:text-primary">{leetTitle()}</h1>
           <h1 class="text-7xl font-bold hover:text-amber-500">Assistant</h1>
           <p class="text-xl py-6">
-            A personalized leet-code assistant, guiding you about problems to
-            solve based on your performance & interests. <br />
+            A personalized leet-code assistant, guiding you about problems to solve based on your performance &
+            interests. <br />
             <br />
-            Click below to start a session and solve questions in a personalized
-            way!
+            Click below to start a session and solve questions in a personalized way!
           </p>
 
           <button
-            class={
-              isLoading()
-                ? "btn btn-primary btn-lg btn-disabled"
-                : "btn btn-primary btn-lg"
-            }
+            class={isLoading() ? "btn btn-primary btn-lg btn-disabled" : "btn btn-primary btn-lg"}
             onClick={() => {
               if (!isLoading()) handleClick();
             }}

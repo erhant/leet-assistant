@@ -1,5 +1,5 @@
 import { QuestionType } from "~/types";
-import QuestionSummary from "./QuestionSummary";
+import QuestionSummary from "./QuestionCard";
 import { For } from "solid-js";
 
 /**
@@ -11,9 +11,7 @@ import { For } from "solid-js";
 export default function QuestionsGrid(props: { questions: QuestionType[] }) {
   return (
     <div class="grid my-2 grid-cols-4 gap-4">
-      <For each={props.questions}>
-        {(question) => <QuestionSummary question={question} />}
-      </For>
+      <For each={props.questions}>{(question) => <QuestionSummary question={question} />}</For>
     </div>
   );
 }

@@ -5,7 +5,8 @@
   "license": "MIT",
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "data"
   ],
   "devDependencies": {
     "@types/node": "^20.10.1",
@@ -15,6 +16,8 @@
   },
   "dependencies": {
     "@elysiajs/eden": "^0.7.4",
-    "elysia": "^0.7.29"
+    "@pinecone-database/pinecone": "1.0.1",
+    "elysia": "^0.7.29",
+    "langchain": "^0.0.200"
   }
 }

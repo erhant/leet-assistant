@@ -1,9 +1,8 @@
 import type { PineconeRecord } from "@pinecone-database/pinecone";
-import type { RecordId } from "@pinecone-database/pinecone";
 
-/** A parsed row. */
-export interface DataRow {
-  id: number;
+/** A parsed question, also used as a metadata. */
+export type Question = {
+  questionId: string;
   title: string;
   slug: string;
   description: string;
@@ -15,12 +14,12 @@ export interface DataRow {
   likes: number;
   dislikes: number;
   hints: string;
-  similarQuestionIds: number[];
+  similarQuestionIds: string[];
   similarQuestionsText: string[];
-}
+};
 
-/** A row from the CSV file. */
-export interface RawDataRow {
+/** A raw question row from the CSV file. */
+export type QuestionRaw = {
   "Question ID": string;
   "Question Title": string;
   "Question Slug": string;
@@ -35,15 +34,7 @@ export interface RawDataRow {
   Hints: string;
   "Similar Questions ID": string;
   "Similar Questions Text": string;
-}
-
-/** Metadata stored within the vector store along with id and embeddings. */
-export type DataRowMetadata = Pick<DataRow, "difficulty" | "topics">;
-export type DataRowMetadataResponse = DataRowMetadata & { text: string };
+};
 
 /** A data row for Pinecone, along with embeddings. */
-export type DataRowEmbedding = PineconeRecord<
-  DataRowMetadata & {
-    id: RecordId;
-  }
->;
+export type QuestionPineconeRecord = PineconeRecord<Question>;

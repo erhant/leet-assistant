@@ -29,6 +29,9 @@
     "solid-start": "^0.3.10",
     "@elysiajs/eden": "*"
   },
+  "prettier": {
+    "printWidth": 120
+  },
   "engines": {
     "node": "18"
   }

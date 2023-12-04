@@ -1,5 +1,5 @@
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { dataToString } from "./data";
+import { dataToString } from "./question";
 import type { DataRow } from "../types";
 
 /** Using OpenAI, convert documents to embeddings.
