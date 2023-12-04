@@ -12,9 +12,11 @@ import ChatScreen from "./ChatScreen";
  * @param props session id for the backend
  */
 export default function Session(props: { sessionId: string; resetSession: () => Promise<void> }) {
-  const [chatHistory, setChatHistory] = createSignal<string[]>(getDummyChatHistory());
+  const [chatHistory, setChatHistory] = createSignal<string[]>([
+    "Welcome! I am your Leet Assistant, how may I help you for this session?",
+  ]);
   const [isLoading, setIsLoading] = createSignal(true);
-  const [questions, setQuestions] = createSignal<QuestionBatch[1]>([]); // );
+  const [questions, setQuestions] = createSignal<QuestionBatch[1]>([]);
 
   // chat modal stuff
   const chatModalId = "chatmodalrag";
@@ -73,7 +75,13 @@ export default function Session(props: { sessionId: string; resetSession: () => 
           // @ts-expect-error
           ref={chatModalRef}
         >
-          <ChatScreen sessionId={props.sessionId} chatHistory={chatHistory()} />
+          <ChatScreen
+            sessionId={props.sessionId}
+            chatHistory={chatHistory()}
+            updateChatHistory={(your, their) => {
+              setChatHistory((history) => [...history, your, their]);
+            }}
+          />
           <form method="dialog" class="modal-backdrop">
             <button>close</button>
           </form>

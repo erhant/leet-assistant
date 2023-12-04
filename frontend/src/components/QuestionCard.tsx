@@ -10,8 +10,6 @@ export default function QuestionCard(props: { sessionId: string; question: Quest
 
   async function handleSignal(signal: "solve" | "retry" | "fail") {
     await makeSignal(props.sessionId, props.contentId, signal);
-
-    // close the modal
     modalRef.close();
   }
 

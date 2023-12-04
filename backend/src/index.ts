@@ -8,6 +8,7 @@ import errors from "./errors";
 import { format, setupPrerequisites } from "./util/";
 import { tSignalType } from "./types";
 import type { SessionType, SignalType, QuestionBatch } from "./types";
+import { PrettyOptions } from "pino-pretty";
 
 // TODO: make the session check a common middleware or something
 
@@ -22,11 +23,14 @@ export async function startServer() {
         level: "debug",
         transport: {
           target: "pino-pretty",
-          options: { colorize: true, sync: true },
+          options: {
+            colorize: true,
+            sync: true, // needed in testing?
+            ignore: "pid,hostname",
+            // would love to do: "TIME | CODE | respTime | method /url"
+          } satisfies PrettyOptions,
         },
       }),
-      // TODO: use Gingonic style logging?
-      // TIME | CODE | respTime | method /url
     )
     ///////////////   state   \\\\\\\\\\\\\\\
     .state("sessions", {} as SessionType)
