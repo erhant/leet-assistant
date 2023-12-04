@@ -1,10 +1,9 @@
-import { For, createSignal } from "solid-js";
-import backend from "~/api/backend";
+import { For, Show, createSignal, onMount } from "solid-js";
 import QuestionView from "./QuestionView";
 import type { Question } from "~/types";
 import QuestionCard from "./QuestionCard";
-import QuestionsGrid from "./QuestionsGrid";
 import { getDummyQuestions } from "~/api/dummy";
+import { getQuestions } from "~/api/backend";
 
 /**
  * Within a session, we see a batch of questions along with a chat bot where we can
@@ -12,38 +11,24 @@ import { getDummyQuestions } from "~/api/dummy";
  * @param props session id for the backend
  */
 export default function Session(props: { sessionId: string }) {
-  const [prompt, setPrompt] = createSignal("");
   const [chatHistory, setChatHistory] = createSignal<string[]>([]);
-  const [questions, setQuestions] = createSignal<Question[]>(getDummyQuestions());
+  const [questions, setQuestions] = createSignal<Question[]>([]); // getDummyQuestions());
 
-  const sendMessage = () => {
-    const message = prompt();
-    if (message === "") {
-      return;
-    }
-
-    setChatHistory((h) => [...h, message]);
-    setPrompt("");
-
-    // send message to backend
-    backend.prompt
-      .post({
-        prompt: "describe", // TODO: take from UI
-        sessionId: props.sessionId,
-      })
-      .then(({ data, status, error }) => {
-        // TODO: check status
-        if (status !== 200 || data === null) {
-          console.error({ error, status });
-        } else {
-          setChatHistory((h) => [...h, data]);
-        }
-      });
-  };
+  onMount(async () => {
+    const questions = await getQuestions(props.sessionId);
+    setQuestions(questions.map((q) => q.data));
+  });
 
   return (
     <div class="container mx-auto p-10 my-5">
-      <QuestionsGrid questions={questions()} />
+      <div class="grid my-2 grid-cols-4 gap-x-4 gap-y-6">
+        <Show
+          when={questions().length > 0}
+          fallback={<For each={new Array(12)}>{() => <div class="skeleton grow w-full h-32"></div>}</For>}
+        >
+          <For each={questions()}>{(question) => <QuestionCard question={question} />}</For>
+        </Show>
+      </div>
 
       {/* chat screen with the bot */}
       {/* <div>

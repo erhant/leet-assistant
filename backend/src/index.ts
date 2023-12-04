@@ -94,7 +94,7 @@ export async function startServer() {
         }
         const session = sessions[sessionId];
 
-        const batch = await personalized.batch(session.sdkSession);
+        const batch = (await personalized.batch(session.sdkSession)) as QuestionBatch;
         return { batch };
       },
       { body: t.Object({ sessionId: t.String() }) },

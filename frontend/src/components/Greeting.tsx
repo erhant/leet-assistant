@@ -1,5 +1,5 @@
 import { Setter, createEffect, createSignal, onCleanup } from "solid-js";
-import backend from "~/api/backend";
+import { newSession } from "~/api/backend";
 
 /** Tiny visual flare to randomly return LEET or 1337, or something in between. */
 function randomLeet() {
@@ -19,16 +19,11 @@ export default function Greeting(props: { setSessionId: Setter<string> }) {
   const interval = setInterval(() => setLeetTitle(randomLeet()), 1000);
   onCleanup(() => clearInterval(interval));
 
-  function handleClick() {
+  async function handleClick() {
     setIsLoading(true);
-    backend["new-session"].post().then((response) => {
-      if (response.status === 200 && response.data) {
-        props.setSessionId(response.data.sessionId);
-      } else {
-        alert(response.status);
-      }
-      setIsLoading(false);
-    });
+    const sessionId = await newSession();
+    props.setSessionId(sessionId);
+    setIsLoading(false);
   }
   return (
     <div class="hero min-h-screen bg-base-200">

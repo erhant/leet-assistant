@@ -1,5 +1,4 @@
-import { For } from "solid-js";
-import IconOutbound from "~/icons/outbound";
+import IconOutbound from "~/icons/Outbound";
 import { Question } from "~/types";
 import QuestionBadges from "./QuestionBadges";
 
