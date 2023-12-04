@@ -4,6 +4,7 @@ import type { Question } from "./types";
 
 /** Using OpenAI, convert documents to embeddings.
  * @deprecated we are using `fromText` method of LangChain's Pinecone instead.
+ * Just keeping this function here for historical purposes.
  */
 export async function questionToEmbeddings(questions: Question[]) {
   const API_KEY = Bun.env.OPENAI_API_KEY;

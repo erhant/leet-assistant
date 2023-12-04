@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { edenTreaty } from "@elysiajs/eden";
 import { type ServerType, startServer } from "../src";
+import { prettyBatch } from "../src/util";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -35,11 +36,28 @@ describe("create a session", () => {
     });
   });
 
-  describe("prompts", () => {
+  describe("batch", () => {
+    it("should get a batch of questions", async () => {
+      const response = await app.batch.post({
+        sessionId,
+      });
+
+      if (response.data) {
+        const batch = response.data.batch;
+        console.log(prettyBatch(batch));
+      } else {
+        expect(response.data).not.toBe(null);
+      }
+    });
+  });
+
+  describe.todo("signal", () => {});
+
+  describe.skip("prompt", () => {
     it("should get a 'describe' prompt", async () => {
       const response = await app.prompt.post({
         prompt: "describe",
-        sessionId: sessionId,
+        sessionId,
       });
       expect(response.data).not.toBe(null);
       console.log(response.data);

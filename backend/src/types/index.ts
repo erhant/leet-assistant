@@ -1,8 +1,12 @@
-export type * from "./question";
-
+import type { Question as QuestionType } from "../../../data/src/types";
 import type { SessionObject } from "firstbatch";
 import { t } from "elysia";
-import type { DataRowMetadataResponse } from "../types";
+
+/** Question type, aliased to use & export at the same time. */
+export type Question = QuestionType;
+
+/** Returned type from `personalized.batch`. */
+export type QuestionBatch = [string[], { id: string; data: QuestionType & { text: string } }[]];
 
 /** A user prompt. */
 export type PromptType =
@@ -24,7 +28,7 @@ export const tSignalType = t.Union([t.Literal("solve"), t.Literal("repeat"), t.L
 export type PromptInputType = {
   prompt: PromptType;
   chatHistory: [string, string][];
-  context: DataRowMetadataResponse[];
+  context: QuestionBatch[1];
 };
 
 /** A user session. The key is sessionId. */

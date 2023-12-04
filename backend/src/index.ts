@@ -6,7 +6,10 @@ import chalk from "chalk";
 import constants from "./constants";
 import errors from "./errors";
 import { format, setupPrerequisites } from "./util/";
-import { tSignalType, type DataRowMetadataResponse, type SessionType, type SignalType } from "./types";
+import { tSignalType } from "./types";
+import type { SessionType, SignalType, QuestionBatch } from "./types";
+
+// TODO: make the session check a common middleware or something
 
 export async function startServer() {
   const { chain, index, personalized } = await setupPrerequisites();
@@ -64,14 +67,10 @@ export async function startServer() {
         }
         const session = sessions[sessionId];
 
-        // TODO: should this be done once and used again for each prompt?
-        const [ids, metadata] = await personalized.batch(session.sdkSession, {
-          batchSize: constants.FIRSTBATCH.PROMPT_BATCH_SIZE,
-        });
-
+        const [_, metadata] = (await personalized.batch(session.sdkSession)) as QuestionBatch;
         const response = await chain.invoke({
           chatHistory: session.chatHistory,
-          context: metadata as unknown as DataRowMetadataResponse[],
+          context: metadata,
           prompt,
         });
 
@@ -86,9 +85,23 @@ export async function startServer() {
         }),
       },
     )
+    // gets a new question
+    .post(
+      "/batch",
+      async ({ body: { sessionId }, store: { sessions } }) => {
+        if (!(sessionId in sessions)) {
+          throw errors.InvalidSession;
+        }
+        const session = sessions[sessionId];
+
+        const batch = await personalized.batch(session.sdkSession);
+        return { batch };
+      },
+      { body: t.Object({ sessionId: t.String() }) },
+    )
     // signals a navigation within the user embeddings space
     .post(
-      "/new-question",
+      "/signal",
       async ({ body: { signal, contentId, sessionId }, store: { sessions } }) => {
         if (!(sessionId in sessions)) {
           throw errors.InvalidSession;
@@ -125,10 +138,6 @@ export async function startServer() {
           // could be due to invalid session id / content id or something?
           throw errors.AddSignalFailed;
         }
-
-        // get some new questions with the updated state
-        const batch = await personalized.batch(sdkSession);
-        return { batch };
       },
       {
         body: t.Object({
@@ -138,9 +147,6 @@ export async function startServer() {
         }),
       },
     )
-    // .on("stop", ({ log }) => {
-    //   log.info("Gracefully shutting down.");
-    // })
     .listen(Bun.env.ELYSIA_PORT || 8080);
 
   return app;

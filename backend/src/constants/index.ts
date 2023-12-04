@@ -6,9 +6,8 @@ export default {
     API_KEY: Bun.env.FIRSTBATCH_API_KEY,
     ALGORITHM_ID: Bun.env.FIRSTBATCH_ALGORITHM_ID,
     ALGORITHM_NAME: "SIMPLE", // FIXME: this should be CUSTOM
-    DEFAULT_BATCH_SIZE: 3,
-    PROMPT_BATCH_SIZE: 20,
-    VECTORDB_ID: "leet-assistant", // leet-assistant-pinecone-145
+    BATCH_SIZE: 12,
+    VECTORDB_ID: "leet-assistant-11", // leet-assistant-pinecone-145
   },
   PINECONE: {
     API_KEY: Bun.env.PINECONE_API_KEY,

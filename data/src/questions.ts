@@ -2,14 +2,11 @@ import fs from "fs";
 import csv from "csv-parser";
 import type { Question, QuestionRaw } from "./types";
 
-/** Placeholder for a question context, should mention this to GPT. */
-const PLACEHOLDER = "none";
-
 /** Loads the CSV data about LeetCode problems, it has 2385 problems stored. */
 export async function loadQuestions(path: string): Promise<Question[]> {
   const data: Question[] = [];
 
-  return new Promise((resolve, reject) => {
+  const questions = await new Promise<Question[]>((resolve, reject) => {
     fs.createReadStream(path)
       // @ts-ignore interesting type error although this works fine
       .pipe(csv())
@@ -41,6 +38,10 @@ export async function loadQuestions(path: string): Promise<Question[]> {
         reject(error);
       });
   });
+
+  const questionsFiltered = questions.filter((q) => q.description !== "");
+  console.log(`Ignored ${questions.length - questionsFiltered.length} questions due to missing descriptions.`);
+  return questionsFiltered;
 }
 
 /** Converts a data row to a single string. */
@@ -48,10 +49,11 @@ export function questionToString(data: Question): string {
   const similar = data.similarQuestionsText.join(",");
   return [
     `Question: ${data.title}`,
-    `Description: ${data.description || PLACEHOLDER}`,
+    `Description: ${data.description}`,
     `Difficulty: ${data.difficulty}`,
-    `Topics: ${data.topics.length === 0 ? PLACEHOLDER : data.topics.join(",")}`,
-    `Similar Questions: ${similar.length === 0 ? PLACEHOLDER : similar}`,
+    `Topics: ${data.topics.length === 0 ? "No topics." : data.topics.join(",")}`,
+    `Hints: ${data.hints === "" ? "No hints!" : data.hints}`,
+    `Similar Questions: ${similar.length === 0 ? "None, this question is unique!" : similar}`,
   ].join("\n");
 }
 
@@ -64,8 +66,8 @@ if (import.meta.main) {
     const question = questions[Math.floor(Math.random() * questions.length)];
     return {
       ...question,
-      // text: questionToString(question),
+      text: questionToString(question),
     };
   });
-  console.log(randomQuestions);
+  // console.log(randomQuestions);
 }

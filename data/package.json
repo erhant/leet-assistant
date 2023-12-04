@@ -7,12 +7,19 @@
   "type": "module",
   "scripts": {
     "questions": "bun run ./src/questions.ts",
-    "pinecone": "bun run ./src/pinecone.ts"
+    "pinecone": "bun run ./src/pinecone.ts",
+    "train": "bun run ./src/train.ts"
   },
   "dependencies": {
     "csv-parser": "^3.0.0",
     "@pinecone-database/pinecone": "*",
     "langchain": "*"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "bun-types": "*",
+    "prettier": "*",
+    "typescript": "*"
   },
   "prettier": {
     "printWidth": 120

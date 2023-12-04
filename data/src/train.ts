@@ -9,6 +9,7 @@ if (import.meta.main) {
   const questions: Question[] = await loadQuestions("./res/leetcode_questions.csv");
   const questionStrings: string[] = questions.map((q) => questionToString(q));
   console.log(`Loaded ${questions.length} items.`);
+
   console.log("Generating & uploading embeddings...");
 
   const pinecone = await connectPinecone();
