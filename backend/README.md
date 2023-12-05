@@ -1,6 +1,6 @@
 # Backend
 
-Uses ElysiaJS with Bun. The AI code based on the [RAG tutorial](https://js.langchain.com/docs/expression_language/cookbook/retrieval) by LangChain. You can find the example codes there here as well, under the [examples](./backend/examples/) folder. The context for this AI is fed via FirstBatch SDK.
+Uses ElysiaJS with Bun. The AI code based on the [RAG tutorial](https://js.langchain.com/docs/expression_language/cookbook/retrieval) by LangChain, and the context for this AI is fed via FirstBatch SDK.
 
 ## Usage
 

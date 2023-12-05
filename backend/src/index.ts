@@ -101,8 +101,13 @@ export async function startServer() {
         }
         const session = sessions[sessionId];
 
-        const batch = (await personalized.batch(session.sdkSession)) as QuestionBatch;
-        return { batch };
+        try {
+          const batch = (await personalized.batch(session.sdkSession)) as QuestionBatch;
+          return { batch };
+        } catch (err) {
+          console.error(err);
+          throw err;
+        }
       },
       { body: t.Object({ sessionId: t.String() }) },
     )

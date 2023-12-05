@@ -51,3 +51,17 @@ export async function makePrompt(sessionId: string, prompt: "describe" | "consul
     throw new Error(response.error?.name);
   }
 }
+
+export function formatPrompt(prompt: string) {
+  switch (prompt) {
+    case "describe":
+      return "What do you think are the types of questions that I can solve, based on the context?";
+
+    case "consult":
+      return "What resources would you suggest that I should study to get better at the topics as given in the context?";
+
+    default:
+      // prompt satisfies never;
+      throw new Error("Unknown prompt.");
+  }
+}

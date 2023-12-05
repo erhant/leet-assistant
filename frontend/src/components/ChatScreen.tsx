@@ -1,30 +1,32 @@
 import { For, Show, createSignal } from "solid-js";
-import type { Question } from "~/types";
-import QuestionBadges from "./QuestionBadges";
-import QuestionView from "./QuestionView";
-import { makePrompt } from "~/api/backend";
+import { formatPrompt, makePrompt } from "~/api/backend";
 
 export default function ChatScreen(props: {
   sessionId: string;
   chatHistory: string[];
-  updateChatHistory: (your: string, their: string) => void;
+  updateChatHistory: (message: string) => void;
 }) {
   const [isLoading, setIsLoading] = createSignal(false);
-  const [prompt, setPrompt] = createSignal("");
 
   async function handlePrompt(prompt: "describe" | "consult") {
+    // your prompt
+    const yourMessage = formatPrompt(prompt);
+    props.updateChatHistory(yourMessage);
+
+    // assistant prompt
     setIsLoading(true);
-    const [yourMessage, assistantMessage] = await makePrompt(props.sessionId, prompt);
-    props.updateChatHistory(yourMessage, assistantMessage);
+    const [_, assistantMessage] = await makePrompt(props.sessionId, prompt);
+    props.updateChatHistory(assistantMessage);
     setIsLoading(false);
   }
 
   return (
-    <div class="modal-box w-100">
+    <div class="modal-box">
       <h3 class="text-center my-2">Talk to your Leet Assistant</h3>
 
-      {/* chat bubbles */}
+      {/* main chatting container */}
       <div class="container">
+        {/* actual conversation bubble here */}
         <For each={props.chatHistory}>
           {(chat, i) =>
             i() % 2 == 0 ? (
@@ -34,7 +36,7 @@ export default function ChatScreen(props: {
               </div>
             ) : (
               <div class="chat chat-end">
-                <div class="chat-header  opacity-80">You</div>
+                <div class="chat-header opacity-80">You</div>
                 <div class="chat-bubble">{chat}</div>
               </div>
             )
@@ -43,7 +45,7 @@ export default function ChatScreen(props: {
 
         {/* loading animation */}
         <Show when={isLoading()}>
-          <div class="flex mx-auto mb-7">
+          <div class="flex mx-auto mb-6 mt-4">
             <span class="loading loading-dots loading-lg mx-auto"></span>
           </div>
         </Show>
@@ -51,6 +53,7 @@ export default function ChatScreen(props: {
 
       {/* user action menu */}
       <div class="divider my-3" />
+      <p class="mb-4 text-center">Click on any of these prompts below.</p>
       <div class="flex my-2">
         <ul class="menu menu-horizontal menu-lg bg-base-200 rounded-box mx-auto">
           <li class={"hover:text-primary"} onClick={() => handlePrompt("describe")}>
@@ -62,7 +65,7 @@ export default function ChatScreen(props: {
             <a>Consult</a>
           </li>
           {/* FIXME: add suggest prompt to backend */}
-          <li class={"hover:text-secondary"} onClick={() => handlePrompt("consult")}>
+          <li class={"hover:text-info"} onClick={() => handlePrompt("consult")}>
             {/* makes a suggestion for an alternative topic */}
             <a>Suggest</a>
           </li>

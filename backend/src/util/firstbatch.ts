@@ -12,6 +12,7 @@ export async function setupFirstBatch(index: Index) {
     quantizerType: "scalar",
     batchSize: constants.FIRSTBATCH.BATCH_SIZE,
     verbose: true,
+    enableHistory: false, // allow content to be re-used in a batch
   });
 
   const vectorStore = new Pinecone(index);

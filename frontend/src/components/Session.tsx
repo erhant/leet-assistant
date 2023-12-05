@@ -37,8 +37,7 @@ export default function Session(props: { sessionId: string; resetSession: () => 
     setIsLoading(false);
   }
 
-  // FIXME: this should be uncommened on live
-  // onMount(refreshQuestions);
+  onMount(refreshQuestions);
 
   return (
     <div class="container mx-auto p-10 my-5">
@@ -78,8 +77,8 @@ export default function Session(props: { sessionId: string; resetSession: () => 
           <ChatScreen
             sessionId={props.sessionId}
             chatHistory={chatHistory()}
-            updateChatHistory={(your, their) => {
-              setChatHistory((history) => [...history, your, their]);
+            updateChatHistory={(message) => {
+              setChatHistory((history) => [...history, message]);
             }}
           />
           <form method="dialog" class="modal-backdrop">

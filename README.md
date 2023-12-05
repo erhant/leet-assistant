@@ -20,7 +20,19 @@ This project uses workspaces, so all you have to do is:
 bun install
 ```
 
-and the dependencies will be installed for all workspaces described above.
+and the dependencies will be installed for all workspaces described above. Start the backend server:
+
+```sh
+cd backend
+bun dev
+```
+
+Then, start the web-app in another terminal:
+
+```sh
+cd frontend
+bun dev
+```
 
 > [!NOTE]
 >
