@@ -8,28 +8,23 @@ import errors from "./errors";
 import { format, setupPrerequisites } from "./util/";
 import { tSignalType } from "./types";
 import type { SessionType, SignalType, QuestionBatch } from "./types";
-import { PrettyOptions } from "pino-pretty";
+import pretty from "pino-pretty";
 
 // TODO: make the session check a common middleware or something
 
 export async function startServer() {
-  const { chain, index, personalized } = await setupPrerequisites();
+  const { chain, personalized } = await setupPrerequisites();
 
+  const pinoPretty = pretty({
+    colorize: true,
+  });
   const app = new Elysia()
     ///////////////  plugins  \\\\\\\\\\\\\\\
     .use(cors())
     .use(
       logger({
         level: "debug",
-        transport: {
-          target: "pino-pretty",
-          options: {
-            colorize: true,
-            sync: true, // needed in testing?
-            ignore: "pid,hostname",
-            // would love to do: "TIME | CODE | respTime | method /url"
-          } satisfies PrettyOptions,
-        },
+        stream: pinoPretty,
       }),
     )
     ///////////////   state   \\\\\\\\\\\\\\\
@@ -105,7 +100,7 @@ export async function startServer() {
           const batch = (await personalized.batch(session.sdkSession)) as QuestionBatch;
           return { batch };
         } catch (err) {
-          console.error(err);
+          // console.error(err);
           throw err;
         }
       },
@@ -121,28 +116,14 @@ export async function startServer() {
         const session = sessions[sessionId];
         const sdkSession = session.sdkSession;
 
-        let ok = false;
-        signal satisfies SignalType;
-        switch (signal) {
-          case "solve": {
-            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.SOLVE, contentId);
-            break;
-          }
-          case "retry": {
-            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.RETRY, contentId);
-            break;
-          }
-          case "fail": {
-            ok = await personalized.addSignal(sdkSession, constants.ACTIONS.FAIL, contentId);
-            break;
-          }
-          default:
-            // Elysia validates stuff so we dont expect to get here anyway
-            signal satisfies never;
-            throw errors.InvalidSignal;
+        if (!(signal in constants.ACTIONS)) {
+          throw errors.InvalidSignal;
         }
 
-        return ok;
+        const ok = await personalized.addSignal(sdkSession, constants.ACTIONS[signal], contentId);
+        if (!ok) {
+          throw errors.AddSignalFailed;
+        }
       },
       {
         body: t.Object({
@@ -152,7 +133,7 @@ export async function startServer() {
         }),
       },
     )
-    .listen(Bun.env.ELYSIA_PORT || 8080);
+    .listen(constants.SERVER.PORT);
 
   return app;
 }

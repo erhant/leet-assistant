@@ -30,12 +30,7 @@ export async function makeSignal(sessionId: string, contentId: string, signal: "
     contentId,
     signal,
   });
-  if (response.status === 200 && response.data !== null) {
-    if (!response.data) {
-      // something went wrong?
-      throw new Error("Could not add signal.");
-    }
-  } else {
+  if (response.status !== 200) {
     throw new Error(response.error?.name);
   }
 }
@@ -46,12 +41,18 @@ export async function makePrompt(sessionId: string, prompt: "describe" | "consul
     prompt,
   });
   if (response.status === 200 && response.data !== null) {
-    return response.data; // response as a string
+    const message = response.data;
+    // console.log(message[1]);
+    return message;
   } else {
     throw new Error(response.error?.name);
   }
 }
 
+/**
+ * Converts to prompt to a more human-friendly string.
+ * Note that backend prompt for the same key might have a different (usually with more detailed instructions) format.
+ */
 export function formatPrompt(prompt: string) {
   switch (prompt) {
     case "describe":

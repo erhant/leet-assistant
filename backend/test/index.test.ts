@@ -2,13 +2,16 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { edenTreaty } from "@elysiajs/eden";
 import { type ServerType, startServer } from "../src";
 import { prettyBatch } from "../src/util";
+import constants from "../src/constants";
 
-const BASE_URL = "http://localhost:8080";
+// enable for logs
+const VERBOSE = false;
 
 describe("create a session", () => {
-  const app = edenTreaty<ServerType>(BASE_URL);
+  const app = edenTreaty<ServerType>("http://localhost:" + constants.SERVER.PORT);
   let server: ServerType;
   let sessionId: string;
+  let contentId: string;
 
   beforeAll(async () => {
     server = await startServer();
@@ -25,7 +28,7 @@ describe("create a session", () => {
 
     it("should get session", async () => {
       const response = await app["get-session"].post({ sessionId });
-      expect(response.error).toBe(null);
+      expect(response.status).toBe(200);
 
       const data = response.data;
       if (data) {
@@ -41,42 +44,58 @@ describe("create a session", () => {
       const response = await app.batch.post({
         sessionId,
       });
+      expect(response.status).toBe(200);
 
       if (response.data) {
         const batch = response.data.batch;
-        console.log(prettyBatch(batch));
+
+        // save content id for the later tests with signals
+        contentId = batch[1][0].id;
+        if (VERBOSE) console.log(prettyBatch(batch));
       } else {
         expect(response.data).not.toBe(null);
       }
     });
   });
 
-  describe.todo("signal", () => {
-    it("should signal 'retry'", async () => {});
+  describe("signal", () => {
+    (["fail", "retry", "solve"] as const).map((signal) =>
+      it(`should signal "${signal}" and get a batch`, async () => {
+        const signalResponse = await app.signal.post({
+          sessionId,
+          contentId,
+          signal,
+        });
+        expect(signalResponse.status).toBe(200);
 
-    it("should signal 'retry'", async () => {});
-
-    it("should signal 'retry'", async () => {});
+        const batchResponse = await app.batch.post({
+          sessionId,
+        });
+        expect(batchResponse.status).toBe(200);
+        if (batchResponse.data) {
+          const batch = batchResponse.data.batch;
+          // TODO: add expect
+        } else {
+          expect(batchResponse.data).not.toBe(null);
+        }
+      }),
+    );
   });
 
-  describe.skip("prompt", () => {
-    it("should get a 'describe' prompt", async () => {
-      const response = await app.prompt.post({
-        prompt: "describe",
-        sessionId,
-      });
-      expect(response.data).not.toBe(null);
-      console.log(response.data);
-    });
+  describe("prompt", () => {
+    (["describe", "consult"] as const).map((prompt) =>
+      it(`should get a "${prompt}" prompt`, async () => {
+        const response = await app.prompt.post({
+          sessionId,
+          prompt,
+        });
+        expect(response.status).not.toBe(200);
+        expect(response.data).not.toBe(null);
+        expect(typeof response.data).not.toBe("string");
 
-    it("should get a 'consult' prompt", async () => {
-      const response = await app.prompt.post({
-        prompt: "consult",
-        sessionId: sessionId,
-      });
-      expect(response.data).not.toBe(null);
-      console.log(response.data);
-    });
+        if (VERBOSE) console.log(response.data?.[1]);
+      }),
+    );
   });
 
   afterAll(() => {

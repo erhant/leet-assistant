@@ -2,12 +2,26 @@ import IconOutbound from "~/icons/Outbound";
 import { Question } from "~/types";
 import QuestionBadges from "./QuestionBadges";
 import { makeSignal } from "~/api/backend";
+import { createSignal } from "solid-js";
 
 export default function QuestionView(props: {
   question: Question;
-  handleSignal: (signal: "solve" | "retry" | "fail") => void;
+  handleSignal: (signal: "solve" | "retry" | "fail") => Promise<void>;
 }) {
+  const [isLoading, setIsLoading] = createSignal(false);
   const url = `https://leetcode.com/problems/${props.question.slug}/`;
+
+  async function handleSignal(signal: "solve" | "retry" | "fail") {
+    // dont allow another prompt while the previous one is going on
+    if (isLoading()) return;
+
+    setIsLoading(true);
+    await props.handleSignal(signal);
+    setIsLoading(false);
+  }
+
+  // adds disable style to buttons when loading
+  const buttonDisable = () => (isLoading() ? " btn-disabled" : "");
 
   return (
     <div class="flex flex-col center gap-2">
@@ -40,13 +54,13 @@ export default function QuestionView(props: {
         on your experience, Leet Assistant will try to bring more relevant questions for you.
       </p>
       <div class="flex flex-row gap-5 justify-center my-2">
-        <button class="btn btn-lg btn-success" onClick={() => props.handleSignal("solve")}>
+        <button class={"btn btn-lg btn-success" + buttonDisable()} onClick={() => handleSignal("solve")}>
           Solved
         </button>
-        <button class="btn btn-lg btn-warning" onClick={() => props.handleSignal("retry")}>
+        <button class={"btn btn-lg btn-warning" + buttonDisable()} onClick={() => handleSignal("retry")}>
           Retry
         </button>
-        <button class="btn btn-lg btn-error" onClick={() => props.handleSignal("fail")}>
+        <button class={"btn btn-lg btn-error" + buttonDisable()} onClick={() => handleSignal("fail")}>
           Failed
         </button>
       </div>

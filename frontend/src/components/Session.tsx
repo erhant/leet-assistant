@@ -42,7 +42,7 @@ export default function Session(props: { sessionId: string; resetSession: () => 
   return (
     <div class="container mx-auto p-10 my-5">
       {/* question cards */}
-      <div class="grid my-2 grid-cols-4 gap-x-4 gap-y-6">
+      <div class="grid my-2 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-4 gap-y-6">
         <Show
           when={!isLoading()}
           fallback={<For each={new Array(12)}>{() => <div class="skeleton grow w-full h-32"></div>}</For>}
@@ -56,16 +56,19 @@ export default function Session(props: { sessionId: string; resetSession: () => 
       </div>
 
       {/* controls */}
-      <div class="flex flex-row center mx-auto my-4 gap-x-4">
-        <button class="btn btn-neutral btn-outline" onClick={() => refreshQuestions()}>
+      <div class="flex flex-row justify-center mx-auto my-4 gap-x-4">
+        {/* get a new set of questions */}
+        <button class="btn btn-neutral btn-lg btn-outline hover:bg-primary" onClick={() => refreshQuestions()}>
           Refresh
         </button>
-        <button class="btn btn-neutral btn-outline" onClick={() => reset()}>
+
+        {/* creates a new session and calls refresh */}
+        <button class="btn btn-neutral btn-lg btn-outline hover:bg-error" onClick={() => reset()}>
           Reset
         </button>
 
         {/* this is a button along with a chat dialog modal */}
-        <button class="btn btn-neutral btn-outline" onClick={() => chatModalRef.showModal()}>
+        <button class="btn btn-neutral btn-lg btn-outline hover:bg-accent" onClick={() => chatModalRef.showModal()}>
           Chat
         </button>
         <dialog
@@ -81,6 +84,7 @@ export default function Session(props: { sessionId: string; resetSession: () => 
               setChatHistory((history) => [...history, message]);
             }}
           />
+          {/* this causes modal to be closed when clicked outside */}
           <form method="dialog" class="modal-backdrop">
             <button>close</button>
           </form>
