@@ -10,7 +10,8 @@ import { tPromptType, tSignalType } from "./types";
 import type { SessionType, QuestionBatch } from "./types";
 import pretty from "pino-pretty";
 
-// TODO: make the session check a common middleware or something
+// TODO: add a `beforeHandle` for session checking
+// TODO: add a Guard that checks sessionId in body and runs the `beforeHandle`
 
 export async function startServer() {
   const { chain, personalized } = await setupPrerequisites();
@@ -68,7 +69,11 @@ export async function startServer() {
         }
         const session = sessions[sessionId];
 
-        const [_, metadata] = (await personalized.batch(session.sdkSession)) as QuestionBatch;
+        // ignore ids (as _) because they are also within the metadata
+        const [_, metadata] = (await personalized.batch(session.sdkSession, {
+          batchSize: constants.FIRSTBATCH.BATCH_SIZE, // trying larger values exceed token size
+        })) as QuestionBatch;
+
         const response = await chain.invoke({
           // chatHistory: session.chatHistory,
           context: metadata,
@@ -133,6 +138,10 @@ export async function startServer() {
         }),
       },
     )
+    .onError(({ error }) => {
+      console.error(error);
+      throw error;
+    })
     .listen(constants.SERVER.PORT);
 
   return app;

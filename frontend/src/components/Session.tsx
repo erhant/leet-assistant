@@ -59,17 +59,17 @@ export default function Session(props: { sessionId: string; resetSession: () => 
       <div class="flex flex-row justify-center mx-auto my-4 gap-x-4">
         {/* get a new set of questions */}
         <button class="btn btn-neutral btn-lg btn-outline hover:bg-primary" onClick={() => refreshQuestions()}>
-          Refresh
+          New Questions
         </button>
 
         {/* creates a new session and calls refresh */}
         <button class="btn btn-neutral btn-lg btn-outline hover:bg-error" onClick={() => reset()}>
-          Reset
+          New Session
         </button>
 
         {/* this is a button along with a chat dialog modal */}
         <button class="btn btn-neutral btn-lg btn-outline hover:bg-accent" onClick={() => chatModalRef.showModal()}>
-          Chat
+          Chat with Assistant
         </button>
         <dialog
           id={chatModalId}

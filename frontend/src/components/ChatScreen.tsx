@@ -1,5 +1,22 @@
 import { For, Show, createSignal } from "solid-js";
-import { formatPrompt, makePrompt } from "~/api/backend";
+import { makePrompt } from "~/api/backend";
+
+function formatPrompt(prompt: "describe" | "consult" | "suggest") {
+  switch (prompt) {
+    case "describe":
+      return "What do you think are the types of questions that I can solve, based on the context?";
+
+    case "consult":
+      return "What resources would you suggest that I should study to get better at the topics as given in the context?";
+
+    case "suggest":
+      return "What resources would you suggest that I should study to get better at the topics as given in the context?";
+
+    default:
+      prompt satisfies never;
+      throw new Error("Unknown prompt.");
+  }
+}
 
 export default function ChatScreen(props: {
   sessionId: string;
@@ -11,7 +28,7 @@ export default function ChatScreen(props: {
   // adds disable style to menu items when loading
   const itemDisable = () => (isLoading() ? " disabled" : "");
 
-  async function handlePrompt(prompt: "describe" | "consult") {
+  async function handlePrompt(prompt: "describe" | "consult" | "suggest") {
     // dont allow another prompt while the previous one is going on
     if (isLoading()) return;
 
@@ -66,18 +83,29 @@ export default function ChatScreen(props: {
       <p class="mb-4 text-center">Click on any of these prompts below.</p>
       <div class="flex my-2">
         <ul class="menu menu-horizontal menu-lg bg-base-200 rounded-box mx-auto">
+          {/* describe */}
           <li class={"hover:text-primary" + itemDisable()} onClick={() => handlePrompt("describe")}>
-            {/* describes the user's current state */}
-            <a>Describe</a>
+            <div
+              class="tooltip"
+              data-tip="Ask about the current questions context & topics, describe their real-world use-cases and importance."
+            >
+              <a>Describe</a>
+            </div>
           </li>
+          {/* consult */}
           <li class={"hover:text-success" + itemDisable()} onClick={() => handlePrompt("consult")}>
-            {/* gives advice on how to improve for the current topic */}
-            <a>Consult</a>
+            <div
+              class="tooltip"
+              data-tip="Ask for advice on how to improve yourself with respect to current set of questions & topics."
+            >
+              <a>Consult</a>
+            </div>
           </li>
-          {/* FIXME: add suggest prompt to backend */}
-          <li class={"hover:text-info" + itemDisable()} onClick={() => handlePrompt("consult")}>
-            {/* makes a suggestion for an alternative topic */}
-            <a>Suggest</a>
+          {/* suggest */}
+          <li class={"hover:text-info" + itemDisable()} onClick={() => handlePrompt("suggest")}>
+            <div class="tooltip" data-tip="Ask about alternative topics to study, related to your current questions.">
+              <a>Suggest</a>
+            </div>
           </li>
         </ul>
       </div>
