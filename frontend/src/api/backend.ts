@@ -35,7 +35,7 @@ export async function makeSignal(sessionId: string, contentId: string, signal: "
   }
 }
 
-export async function makePrompt(sessionId: string, prompt: "describe" | "consult") {
+export async function makePrompt(sessionId: string, prompt: "describe" | "consult" | "suggest") {
   const response = await backend["prompt"].post({
     sessionId,
     prompt,
@@ -46,23 +46,5 @@ export async function makePrompt(sessionId: string, prompt: "describe" | "consul
     return message;
   } else {
     throw new Error(response.error?.name);
-  }
-}
-
-/**
- * Converts to prompt to a more human-friendly string.
- * Note that backend prompt for the same key might have a different (usually with more detailed instructions) format.
- */
-export function formatPrompt(prompt: string) {
-  switch (prompt) {
-    case "describe":
-      return "What do you think are the types of questions that I can solve, based on the context?";
-
-    case "consult":
-      return "What resources would you suggest that I should study to get better at the topics as given in the context?";
-
-    default:
-      // prompt satisfies never;
-      throw new Error("Unknown prompt.");
   }
 }

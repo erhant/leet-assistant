@@ -1,18 +1,25 @@
-# Leet Assistant
+<div>
+  <h1 align="center">
+    Leet Assistant
+  </h1>
+  <p align="center">
+    <i>A personalized LeetCode assistant, guiding you about problems to solve based on your performance & interests.</i>
+  </p>
+</div>
 
-A personalized [LeetCode](https://leetcode.com/) assistant, guiding you about problems to solve based on your performance & interests.
+## Motivation
 
-## Setup
+TODO:
 
-If you would like to
+## Local Setup
+
+TODO:
 
 - Create Pinecone index
 - Train & upload embeddings
 - Get FirstBatch API key
 - Start backend
 - Start frontend
-
-## Code Structure
 
 This project uses workspaces, so all you have to do is:
 
@@ -22,9 +29,9 @@ bun install
 
 and then all dependencies for the workspaces below will be installed & shared:
 
-- [Backend](./backend/) is a simple RESTful api, using [Bun](https://bun.sh/) + [Elysia](https://elysiajs.com/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
-- [Frontend](./frontend/) is a SolidJS web-app, using [Bun](https://bun.sh/) + [Solid](https://www.solidjs.com/) + [Tailwind](https://tailwindcss.com) + [Daisy](https://daisyui.com/).
-- [Data](./data/) has the logic to convert [LeetCode questions](https://www.kaggle.com/datasets/manthansolanki/leetcode-questions) to embeddings and store them in Pinecone, using [Bun](https://bun.sh/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
+- [**Backend**](./backend/) is a simple RESTful api, using [Bun](https://bun.sh/) + [Elysia](https://elysiajs.com/) + [FirstBatch](https://www.firstbatch.xyz/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
+- [**Frontend**](./frontend/) is a single-page web-app, using [Bun](https://bun.sh/) + [Solid](https://www.solidjs.com/) + [Tailwind](https://tailwindcss.com) + [Daisy](https://daisyui.com/).
+- [**Data**](./data/) has the logic to convert the given set of [LeetCode Questions](https://www.kaggle.com/datasets/manthansolanki/leetcode-questions) to embeddings and store them in a vectorDB, using [Bun](https://bun.sh/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
 
 ### Backend
 
@@ -39,6 +46,13 @@ It might take a bit of time at first due to FirstBatch setting up the database, 
 
 ```sh
 bun test --timeout 300000 --bail
+```
+
+You can also build the backend and run it with `node`:
+
+```sh
+bun run build
+node ./dist/server.mjs
 ```
 
 ### Frontend

@@ -4,6 +4,7 @@
   "module": "src/index.js",
   "private": true,
   "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
     "test": "bun test --timeout 300000 --bail",
     "dev": "bun run src/index.ts",
     "dev:watch": "bun run --watch src/index.ts"
