@@ -24,7 +24,7 @@ if (import.meta.main) {
     await PineconeStore.fromTexts(
       questionStrings.slice(i, i + batchSize),
       questions.slice(i, i + batchSize),
-      new OpenAIEmbeddings({ openAIApiKey: Bun.env.OPENAI_API_KEY }),
+      new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_API_KEY }),
       { pineconeIndex: pinecone },
     );
   }

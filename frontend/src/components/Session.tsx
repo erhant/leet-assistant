@@ -45,7 +45,7 @@ export default function Session(props: { sessionId: string; resetSession: () => 
       <div class="grid my-2 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-4 gap-y-6">
         <Show
           when={!isLoading()}
-          fallback={<For each={new Array(12)}>{() => <div class="skeleton grow w-full h-32"></div>}</For>}
+          fallback={<For each={new Array(12)}>{() => <div class="skeleton grow w-full h-48"></div>}</For>}
         >
           <For each={questions()}>
             {(question) => (

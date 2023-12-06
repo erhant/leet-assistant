@@ -74,7 +74,9 @@ describe("create a session", () => {
         expect(batchResponse.status).toBe(200);
         if (batchResponse.data) {
           const batch = batchResponse.data.batch;
-          // TODO: add expect
+          expect(batch.length).toBe(2);
+          expect(batch[0].length).toBe(batch[1].length);
+          expect(batch[0].length).toBeGreaterThan(0);
         } else {
           expect(batchResponse.data).not.toBe(null);
         }

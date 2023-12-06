@@ -29,7 +29,7 @@ export const tSignalType = t.Union([t.Literal("solve"), t.Literal("retry"), t.Li
 /** A conversational RAG input. */
 export type PromptInputType = {
   prompt: PromptType;
-  chatHistory: [string, string][];
+  // chatHistory: [string, string][];
   context: QuestionBatch[1];
 };
 
@@ -37,6 +37,6 @@ export type PromptInputType = {
 export type SessionType = {
   [SessionId: string]: {
     sdkSession: SessionObject;
-    chatHistory: [string, string][];
+    chatHistory: string[];
   };
 };

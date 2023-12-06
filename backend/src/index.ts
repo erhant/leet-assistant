@@ -6,8 +6,8 @@ import chalk from "chalk";
 import constants from "./constants";
 import errors from "./errors";
 import { format, setupPrerequisites } from "./util/";
-import { tSignalType } from "./types";
-import type { SessionType, SignalType, QuestionBatch } from "./types";
+import { tPromptType, tSignalType } from "./types";
+import type { SessionType, QuestionBatch } from "./types";
 import pretty from "pino-pretty";
 
 // TODO: make the session check a common middleware or something
@@ -70,19 +70,19 @@ export async function startServer() {
 
         const [_, metadata] = (await personalized.batch(session.sdkSession)) as QuestionBatch;
         const response = await chain.invoke({
-          chatHistory: session.chatHistory,
+          // chatHistory: session.chatHistory,
           context: metadata,
           prompt,
         });
 
         // store the response in user history
         const userPromptFormatted = format.prompt(prompt);
-        session.chatHistory.push([format.prompt(prompt), response]);
+        session.chatHistory.push(userPromptFormatted, response);
         return [userPromptFormatted, response] as const;
       },
       {
         body: t.Object({
-          prompt: t.Union([t.Literal("describe"), t.Literal("consult")]),
+          prompt: tPromptType,
           sessionId: t.String(),
         }),
       },
