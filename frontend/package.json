@@ -4,6 +4,7 @@
   "author": "erhant",
   "scripts": {
     "dev": "solid-start dev",
+    "prod": "solid-start start",
     "build": "solid-start build",
     "start": "solid-start start"
   },

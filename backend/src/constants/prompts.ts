@@ -25,4 +25,4 @@ export const consultPrompt: string =
 
 // should suggest other types of topics
 export const suggestPrompt: string =
-  "What other question types are there in LeetCode, based on the topics of my context's questions? What other topics are related to those that are listed in my context? Provide a short list of topics, like 5-8 items.";
+  "What other question types & related topics are there in LeetCode, based on my context's questions? Provide a short list of topics, like 5-8 items.";
