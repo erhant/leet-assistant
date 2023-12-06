@@ -11,7 +11,8 @@
 
 TODO:
 
-## Local Setup
+
+If you would like to
 
 TODO:
 
@@ -20,6 +21,8 @@ TODO:
 - Get FirstBatch API key
 - Start backend
 - Start frontend
+
+## Code Structure
 
 This project uses workspaces, so all you have to do is:
 
@@ -32,6 +35,7 @@ and then all dependencies for the workspaces below will be installed & shared:
 - [**Backend**](./backend/) is a simple RESTful api, using [Bun](https://bun.sh/) + [Elysia](https://elysiajs.com/) + [FirstBatch](https://www.firstbatch.xyz/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
 - [**Frontend**](./frontend/) is a single-page web-app, using [Bun](https://bun.sh/) + [Solid](https://www.solidjs.com/) + [Tailwind](https://tailwindcss.com) + [Daisy](https://daisyui.com/).
 - [**Data**](./data/) has the logic to convert the given set of [LeetCode Questions](https://www.kaggle.com/datasets/manthansolanki/leetcode-questions) to embeddings and store them in a vectorDB, using [Bun](https://bun.sh/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
+
 
 ### Backend
 
