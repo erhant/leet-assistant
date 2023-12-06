@@ -1,8 +1,9 @@
 import constants from "~/constants";
 import { edenTreaty } from "@elysiajs/eden";
 import type { ServerType } from "../../../backend/src";
+import { PromptType, SignalType } from "~/types";
 
-const backend = edenTreaty<ServerType>(constants.BASE_URL);
+export const backend = edenTreaty<ServerType>(constants.BASE_URL);
 
 export async function getQuestions(sessionId: string) {
   const response = await backend["batch"].post({
@@ -24,7 +25,7 @@ export async function newSession() {
   }
 }
 
-export async function makeSignal(sessionId: string, contentId: string, signal: "retry" | "solve" | "fail") {
+export async function makeSignal(sessionId: string, contentId: string, signal: SignalType) {
   const response = await backend["signal"].post({
     sessionId,
     contentId,
@@ -35,7 +36,7 @@ export async function makeSignal(sessionId: string, contentId: string, signal: "
   }
 }
 
-export async function makePrompt(sessionId: string, prompt: "describe" | "consult" | "suggest") {
+export async function makePrompt(sessionId: string, prompt: PromptType) {
   const response = await backend["prompt"].post({
     sessionId,
     prompt,

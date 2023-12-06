@@ -9,10 +9,17 @@
 
 ## Motivation
 
-TODO:
+LeetCode is an online platform where you solve coding challenges, such as coding interview questions and competitive programming questions. It has over 2000 problems, with a wide variety of topics.
 
+Leet Assistant is a proof-of-concept tool that demonstrates effortless plug-and-play personalization of [FirstBatch User Embeddings](https://userembeddings.firstbatch.xyz/). The general idea is as follows:
 
-If you would like to
+- User is greeted with a batch of random questions.
+- They can look at each question, and they can notify FirstBatch with one of the three options:
+  - solve: they have solved this question
+  - retry: they have solved it, but would like to retry later
+  - fail: TODO:
+
+## Setup
 
 TODO:
 
@@ -36,6 +43,9 @@ and then all dependencies for the workspaces below will be installed & shared:
 - [**Frontend**](./frontend/) is a single-page web-app, using [Bun](https://bun.sh/) + [Solid](https://www.solidjs.com/) + [Tailwind](https://tailwindcss.com) + [Daisy](https://daisyui.com/).
 - [**Data**](./data/) has the logic to convert the given set of [LeetCode Questions](https://www.kaggle.com/datasets/manthansolanki/leetcode-questions) to embeddings and store them in a vectorDB, using [Bun](https://bun.sh/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
 
+> [!TIP]
+>
+> [Eden Treaty](https://elysiajs.com/plugins/eden/treaty.html) is also used to consume our backend within the frontend, without any hassle or code-rewrite. See [api/backend](./frontend/src/api/backend.ts) for details.
 
 ### Backend
 

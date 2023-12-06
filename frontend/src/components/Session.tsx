@@ -5,6 +5,7 @@ import QuestionCard from "./QuestionCard";
 import { getDummyChatHistory, getDummyQuestions } from "~/api/dummy";
 import { getQuestions } from "~/api/backend";
 import ChatScreen from "./ChatScreen";
+import constants from "~/constants";
 
 /**
  * Within a session, we see a batch of questions along with a chat bot where we can
@@ -12,11 +13,10 @@ import ChatScreen from "./ChatScreen";
  * @param props session id for the backend
  */
 export default function Session(props: { sessionId: string; resetSession: () => Promise<void> }) {
-  const [chatHistory, setChatHistory] = createSignal<string[]>([
-    "Welcome! I am your Leet Assistant, how may I help you for this session?",
-  ]);
+  const [chatHistory, setChatHistory] = createSignal<string[]>([constants.WELCOME_MESSAGE]);
   const [isLoading, setIsLoading] = createSignal(true);
   const [questions, setQuestions] = createSignal<QuestionBatch[1]>([]);
+  const [visited, setVisited] = createSignal<boolean[]>([]);
 
   // chat modal stuff
   const chatModalId = "chatmodalrag";
@@ -26,13 +26,14 @@ export default function Session(props: { sessionId: string; resetSession: () => 
     setIsLoading(true);
     const questions = await getQuestions(props.sessionId);
     setQuestions(questions);
+    setVisited(questions.map(() => false));
     setIsLoading(false);
   }
 
   async function reset() {
     setIsLoading(true);
     await props.resetSession();
-    setChatHistory([]);
+    setChatHistory([constants.WELCOME_MESSAGE]);
     await refreshQuestions();
     setIsLoading(false);
   }
@@ -48,8 +49,16 @@ export default function Session(props: { sessionId: string; resetSession: () => 
           fallback={<For each={new Array(12)}>{() => <div class="skeleton grow w-full h-48"></div>}</For>}
         >
           <For each={questions()}>
-            {(question) => (
-              <QuestionCard question={question.data} contentId={question.id} sessionId={props.sessionId} />
+            {(question, i) => (
+              <QuestionCard
+                question={question.data}
+                contentId={question.id}
+                sessionId={props.sessionId}
+                visited={visited()[i()]}
+                visit={() => {
+                  setVisited((arr) => arr.map((v, j) => (i() === j ? true : v)));
+                }}
+              />
             )}
           </For>
         </Show>
@@ -58,19 +67,24 @@ export default function Session(props: { sessionId: string; resetSession: () => 
       {/* controls */}
       <div class="flex flex-row justify-center mx-auto my-4 gap-x-4">
         {/* get a new set of questions */}
-        <button class="btn btn-neutral btn-lg btn-outline hover:bg-primary" onClick={() => refreshQuestions()}>
-          New Questions
-        </button>
+        <div class="tooltip" data-tip="Get a new batch of questions based on your actions.">
+          <button class="btn btn-neutral btn-lg btn-outline hover:bg-primary" onClick={() => refreshQuestions()}>
+            New Questions
+          </button>
+        </div>
 
         {/* creates a new session and calls refresh */}
-        <button class="btn btn-neutral btn-lg btn-outline hover:bg-error" onClick={() => reset()}>
-          New Session
-        </button>
-
+        <div class="tooltip" data-tip="Start from the beginning, as if you have just created a session.">
+          <button class="btn btn-neutral btn-lg btn-outline hover:bg-error" onClick={() => reset()}>
+            New Session
+          </button>
+        </div>
         {/* this is a button along with a chat dialog modal */}
-        <button class="btn btn-neutral btn-lg btn-outline hover:bg-accent" onClick={() => chatModalRef.showModal()}>
-          Chat with Assistant
-        </button>
+        <div class="tooltip" data-tip="Talk to your Leet Assistant, powered by ChatGPT.">
+          <button class="btn btn-neutral btn-lg btn-outline hover:bg-accent" onClick={() => chatModalRef.showModal()}>
+            Chat with Assistant
+          </button>
+        </div>
         <dialog
           id={chatModalId}
           class="modal"

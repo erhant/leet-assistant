@@ -1,16 +1,21 @@
 import { For, Show, createSignal } from "solid-js";
 import { makePrompt } from "~/api/backend";
+import { PromptType } from "~/types";
 
-function formatPrompt(prompt: "describe" | "consult" | "suggest") {
+/**
+ * Formats a `prompt` to a more UI-friendly sentence, note that backend may be using
+ * a different sentence for the prompt itself, with more context & directives for ChatGPT.
+ */
+function formatPrompt(prompt: PromptType) {
   switch (prompt) {
     case "describe":
-      return "What do you think are the types of questions that I can solve, based on the context?";
+      return "What type of questions am I working with right now?";
 
     case "consult":
-      return "What resources would you suggest that I should study to get better at the topics as given in the context?";
+      return "What would help me get better at these questions?";
 
     case "suggest":
-      return "What resources would you suggest that I should study to get better at the topics as given in the context?";
+      return "What other topics would you suggest I look at, similar to these questions?";
 
     default:
       prompt satisfies never;
@@ -28,7 +33,7 @@ export default function ChatScreen(props: {
   // adds disable style to menu items when loading
   const itemDisable = () => (isLoading() ? " disabled" : "");
 
-  async function handlePrompt(prompt: "describe" | "consult" | "suggest") {
+  async function handlePrompt(prompt: PromptType) {
     // dont allow another prompt while the previous one is going on
     if (isLoading()) return;
 
@@ -45,9 +50,8 @@ export default function ChatScreen(props: {
 
   return (
     <div class="modal-box">
-      <h3 class="text-center my-2">Talk to your Leet Assistant</h3>
-
       {/* main chatting container */}
+      <h3 class="text-center my-2">Talk to your Leet Assistant</h3>
       <div class="container">
         {/* actual conversation bubble here */}
         <For each={props.chatHistory}>

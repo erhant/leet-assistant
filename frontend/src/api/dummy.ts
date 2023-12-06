@@ -1,9 +1,11 @@
 import type { Question } from "~/types";
 
+/** @deprecated just for testing */
 export function getDummyChatHistory(): string[] {
   return ["Hi there!", "Hello.", "Isnt this a sunny day?", "Seems to be so.", "Uh-huh."];
 }
 
+/** @deprecated just for testing */
 export function getDummyQuestions(): Question[] {
   return [
     {

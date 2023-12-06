@@ -36,13 +36,12 @@ export async function startServer() {
       const session = await personalized.session(
         constants.FIRSTBATCH.ALGORITHM_NAME,
         constants.FIRSTBATCH.VECTORDB_ID,
-        {
-          customId: constants.FIRSTBATCH.ALGORITHM_ID,
-        },
+        { customId: constants.FIRSTBATCH.ALGORITHM_ID },
       );
       sessions[session.id] = {
         sdkSession: session,
         chatHistory: [],
+        lastBatch: [[], []],
       };
 
       console.log(chalk.gray("Created session:", session.id));
@@ -70,9 +69,7 @@ export async function startServer() {
         const session = sessions[sessionId];
 
         // ignore ids (as _) because they are also within the metadata
-        const [_, metadata] = (await personalized.batch(session.sdkSession, {
-          batchSize: constants.FIRSTBATCH.BATCH_SIZE, // trying larger values exceed token size
-        })) as QuestionBatch;
+        const [_, metadata] = session.lastBatch;
 
         const response = await chain.invoke({
           // chatHistory: session.chatHistory,
@@ -83,6 +80,7 @@ export async function startServer() {
         // store the response in user history
         const userPromptFormatted = format.prompt(prompt);
         session.chatHistory.push(userPromptFormatted, response);
+
         return [userPromptFormatted, response] as const;
       },
       {
@@ -101,13 +99,9 @@ export async function startServer() {
         }
         const session = sessions[sessionId];
 
-        try {
-          const batch = (await personalized.batch(session.sdkSession)) as QuestionBatch;
-          return { batch };
-        } catch (err) {
-          // console.error(err);
-          throw err;
-        }
+        const batch = (await personalized.batch(session.sdkSession)) as QuestionBatch;
+        session.lastBatch = batch;
+        return { batch };
       },
       { body: t.Object({ sessionId: t.String() }) },
     )

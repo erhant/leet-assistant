@@ -1,17 +1,17 @@
 import IconOutbound from "~/icons/Outbound";
-import { Question } from "~/types";
+import { Question, SignalType } from "~/types";
 import QuestionBadges from "./QuestionBadges";
 import { makeSignal } from "~/api/backend";
 import { createSignal } from "solid-js";
 
 export default function QuestionView(props: {
   question: Question;
-  handleSignal: (signal: "solve" | "retry" | "fail") => Promise<void>;
+  handleSignal: (signal: SignalType) => Promise<void>;
 }) {
   const [isLoading, setIsLoading] = createSignal(false);
   const url = `https://leetcode.com/problems/${props.question.slug}/`;
 
-  async function handleSignal(signal: "solve" | "retry" | "fail") {
+  async function handleSignal(signal: SignalType) {
     // dont allow another prompt while the previous one is going on
     if (isLoading()) return;
 

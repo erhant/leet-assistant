@@ -38,5 +38,6 @@ export type SessionType = {
   [SessionId: string]: {
     sdkSession: SessionObject;
     chatHistory: string[];
+    lastBatch: QuestionBatch;
   };
 };
