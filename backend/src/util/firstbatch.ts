@@ -4,7 +4,7 @@ import { Index } from "@pinecone-database/pinecone";
 import { Question } from "../types";
 
 export async function setupFirstBatch(index: Index) {
-  const API_KEY = Bun.env.FIRSTBATCH_API_KEY;
+  const API_KEY = process.env.FIRSTBATCH_API_KEY;
   if (!API_KEY) {
     throw new Error("No FirstBatch API key!");
   }

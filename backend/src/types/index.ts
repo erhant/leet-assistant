@@ -13,10 +13,12 @@ export type PromptType =
   // describes the user's state right now with the questions solved and such.
   | "describe"
   // provides consultation for the user, offering topics to study etc.
-  | "consult";
+  | "consult"
+  // suggest different topics based on the user's current topics
+  | "suggest";
 
 /** {@link PromptType} using Elysia's `t`. */
-export const tPromptType = t.Union([t.Literal("describe"), t.Literal("consult")]);
+export const tPromptType = t.Union([t.Literal("describe"), t.Literal("consult"), t.Literal("suggest")]);
 
 /** A user action signal. */
 export type SignalType = "solve" | "retry" | "fail";
@@ -27,7 +29,7 @@ export const tSignalType = t.Union([t.Literal("solve"), t.Literal("retry"), t.Li
 /** A conversational RAG input. */
 export type PromptInputType = {
   prompt: PromptType;
-  chatHistory: [string, string][];
+  // chatHistory: [string, string][];
   context: QuestionBatch[1];
 };
 
@@ -35,6 +37,6 @@ export type PromptInputType = {
 export type SessionType = {
   [SessionId: string]: {
     sdkSession: SessionObject;
-    chatHistory: [string, string][];
+    chatHistory: string[];
   };
 };

@@ -6,7 +6,7 @@ import type { Question } from "./types";
  * @param environment environment name, defaults to `gcp-starter`
  */
 export async function connectPinecone(indexName = "leet-assistant", environment = "gcp-starter") {
-  const API_KEY = Bun.env.PINECONE_API_KEY;
+  const API_KEY = process.env.PINECONE_API_KEY;
   if (!API_KEY) {
     throw new Error("No Pinecone API key!");
   }

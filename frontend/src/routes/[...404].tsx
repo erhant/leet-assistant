@@ -2,7 +2,6 @@ import { A } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 
 export default function NotFound() {
-  // TODO: redirect back to home
   return (
     <>
       <HttpStatusCode code={404} />

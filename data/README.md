@@ -1,10 +1,6 @@
 # Leet Assistant - Data Training
 
-Install dependencies:
-
-```bash
-bun install
-```
+The dataset here has been retrieved from <https://www.kaggle.com/datasets/manthansolanki/leetcode-questions/>. Download the dataset and place the CSV file as `./res/leetcode_questions.csv`. We use OpenAI and Pinecone to generate embeddings from the dataset and store them at Pinecone.
 
 ## Usage
 
@@ -17,8 +13,6 @@ bun run questions
 # Print Pinecone index information
 bun run pinecone
 
-# Print Pinecone index information
-bun run pinecone
+# Converts questions to embeddings and stores them at the Pinecone index
+bun run train
 ```
-
-This project was created using `bun init` in bun v1.0.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

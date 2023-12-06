@@ -7,7 +7,7 @@ import type { Question } from "./types";
  * Just keeping this function here for historical purposes.
  */
 export async function questionToEmbeddings(questions: Question[]) {
-  const API_KEY = Bun.env.OPENAI_API_KEY;
+  const API_KEY = process.env.OPENAI_API_KEY;
   const openai = new OpenAIEmbeddings({
     openAIApiKey: API_KEY,
   });
