@@ -3,8 +3,9 @@
   "author": "erhant",
   "module": "src/index.js",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun --minifiy --sourcemap=external",
     "test": "bun test --timeout 300000 --bail",
     "dev": "bun run src/index.ts",
     "dev:watch": "bun run --watch src/index.ts",
