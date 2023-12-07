@@ -1,6 +1,5 @@
 import type { Question as QuestionType } from "../../../data/src/types";
 import type { SessionObject } from "firstbatch";
-import { t } from "elysia";
 
 /** Question type, aliased to use & export at the same time. */
 export type Question = QuestionType;
@@ -17,14 +16,8 @@ export type PromptType =
   // suggest different topics based on the user's current topics
   | "suggest";
 
-/** {@link PromptType} using Elysia's `t`. */
-export const tPromptType = t.Union([t.Literal("describe"), t.Literal("consult"), t.Literal("suggest")]);
-
 /** A user action signal. */
 export type SignalType = "solve" | "retry" | "fail";
-
-/** {@link SignalType} using Elysia's `t`. */
-export const tSignalType = t.Union([t.Literal("solve"), t.Literal("retry"), t.Literal("fail")]);
 
 /** A conversational RAG input. */
 export type PromptInputType = {
@@ -37,7 +30,6 @@ export type PromptInputType = {
 export type SessionType = {
   [SessionId: string]: {
     sdkSession: SessionObject;
-    chatHistory: string[];
     lastBatch: QuestionBatch;
   };
 };

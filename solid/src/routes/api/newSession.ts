@@ -7,7 +7,9 @@ export async function POST({ request }: APIEvent) {
   const index = await connectPinecone();
   const personalized = await setupFirstBatch(index);
 
-  const session = await personalized.session(constants.FIRSTBATCH.ALGORITHM_NAME, constants.FIRSTBATCH.VECTORDB_ID);
+  const session = await personalized.session(constants.FIRSTBATCH.ALGORITHM_NAME, constants.FIRSTBATCH.VECTORDB_ID, {
+    customId: constants.FIRSTBATCH.ALGORITHM_ID,
+  });
 
   const cookie = await write(request, session.id, { hi: 123 });
   return json(session, {
