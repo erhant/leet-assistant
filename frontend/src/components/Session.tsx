@@ -1,8 +1,6 @@
-import { For, Setter, Show, createSignal, onMount } from "solid-js";
-import QuestionView from "./QuestionView";
+import { For, Show, createSignal, onMount } from "solid-js";
 import type { QuestionBatch } from "~/types";
 import QuestionCard from "./QuestionCard";
-import { getDummyChatHistory, getDummyQuestions } from "~/api/dummy";
 import { getQuestions } from "~/api/backend";
 import ChatScreen from "./ChatScreen";
 import constants from "~/constants";

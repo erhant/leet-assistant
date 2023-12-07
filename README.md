@@ -37,13 +37,7 @@ You can locally setup this project by following these steps:
 
 ### Code Structure
 
-This project uses [Bun](https://bun.sh/) runtime, and also makes use of workspaces. All you have to do to get started is:
-
-```sh
-bun install
-```
-
-and then all dependencies for the workspaces below will be installed & shared. The workspaces are as follows:
+This project uses [Bun](https://bun.sh/) runtime.
 
 - [**Backend**](./backend/) is a simple RESTful api, using [Elysia](https://elysiajs.com/) + [FirstBatch](https://www.firstbatch.xyz/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
 - [**Frontend**](./frontend/) is a single-page web-app, using [Solid](https://www.solidjs.com/) + [Tailwind](https://tailwindcss.com) + [Daisy](https://daisyui.com/).

@@ -33,10 +33,10 @@ if (import.meta.main) {
   console.log(stats);
 
   // also fetch a vector to see the result
-  // const vec = await pinecone.fetch(["f0f289d1-9b4a-4ebe-a284-0aac8b8ca582"]);
-  // if (vec.records) {
-  //   for (const key in vec.records) {
-  //     console.log(vec.records[key].metadata);
-  //   }
-  // }
+  const vec = await pinecone.fetch(["f6651a33-7825-48a4-8439-8fcac2cf83a7"]);
+  if (vec.records) {
+    for (const key in vec.records) {
+      console.log(vec.records[key].metadata);
+    }
+  }
 }
