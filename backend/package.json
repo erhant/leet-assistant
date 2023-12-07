@@ -13,12 +13,12 @@
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.0.13",
     "@elysiajs/cors": "^0.7.1",
-    "@pinecone-database/pinecone": "*",
     "chalk": "^5.3.0",
-    "elysia": "*",
     "firstbatch": "latest",
+    "pino-pretty": "^10.2.3",
+    "elysia": "*",
     "langchain": "*",
-    "pino-pretty": "^10.2.3"
+    "@pinecone-database/pinecone": "*"
   },
   "devDependencies": {
     "@elysiajs/eden": "*",

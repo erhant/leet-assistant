@@ -1,8 +1,6 @@
-import IconOutbound from "~/icons/Outbound";
-import { Question, SignalType } from "~/types";
-import QuestionBadges from "./QuestionBadges";
-import { makeSignal } from "~/api/backend";
 import { createSignal } from "solid-js";
+import QuestionBadges from "./QuestionBadges";
+import type { Question, SignalType } from "~/types";
 
 export default function QuestionView(props: {
   question: Question;
@@ -29,11 +27,31 @@ export default function QuestionView(props: {
       <div class="my-2">
         <QuestionBadges question={props.question} />
       </div>
-
       <p>{props.question.description}</p>
+
+      {/* go to leetcode button */}
       <a role="button" class="btn btn-primary" href={url} target="_blank">
-        Solve Problem at LeetCode <IconOutbound />
+        Solve Problem at LeetCode{/* outbound icon */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="icon icon-tabler icon-tabler-outbound"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+          <path d="M9 15l6 -6" />
+          <path d="M11 9h4v4" />
+        </svg>
       </a>
+
+      {/* question stats */}
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-title">Likes</div>
@@ -48,6 +66,7 @@ export default function QuestionView(props: {
         </div>
       </div>
 
+      {/* user actions */}
       <div class="divider">Actions</div>
       <p class="mx-2">
         After you have worked on the problem, you can come back to this page and click any of the buttons below. Based

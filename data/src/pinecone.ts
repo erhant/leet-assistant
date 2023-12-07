@@ -1,4 +1,4 @@
-import { Index, Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
+import { Index, Pinecone, type PineconeRecord } from "@pinecone-database/pinecone";
 import type { Question } from "./types";
 
 /** Connects to an existing Pinecone index.

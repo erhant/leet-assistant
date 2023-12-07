@@ -1,6 +1,6 @@
 import { For, Show, createSignal } from "solid-js";
 import { makePrompt } from "~/api/backend";
-import { PromptType } from "~/types";
+import type { PromptType } from "~/types";
 
 /**
  * Formats a `prompt` to a more UI-friendly sentence, note that backend may be using
