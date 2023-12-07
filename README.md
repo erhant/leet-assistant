@@ -63,6 +63,16 @@ It might take a bit of time at first due to FirstBatch setting up the database, 
 bun test --timeout 300000 --bail
 ```
 
+We also have prepared scripts for Docker:
+
+```sh
+# build an image
+docker build --pull -t leet-assistant-backend .
+
+# run a container
+./run.sh
+```
+
 ### Frontend
 
 We use SolidJS with [`solid-start`](https://start.solidjs.com). To run the server:

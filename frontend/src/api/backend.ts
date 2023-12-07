@@ -3,6 +3,7 @@ import { edenTreaty } from "@elysiajs/eden";
 import type { ServerType } from "../../../backend/src";
 import { PromptType, SignalType } from "~/types";
 
+console.log("BASE URL:", constants.BASE_URL);
 export const backend = edenTreaty<ServerType>(constants.BASE_URL);
 
 export async function getQuestions(sessionId: string) {

@@ -9,9 +9,7 @@
     "test": "bun test --timeout 300000 --bail",
     "dev": "bun run src/index.ts",
     "dev:watch": "bun run --watch src/index.ts",
-    "prod": "NOVE_ENV=production bun run src/index.ts",
-    "docker:build": "docker build --pull -t leet-assistant-backend .",
-    "docker:run": "bun run /usr/src/app/src/index.ts"
+    "prod": "NOVE_ENV=production bun run src/index.ts"
   },
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.0.13",
