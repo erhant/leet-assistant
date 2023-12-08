@@ -25,7 +25,8 @@
     "firstbatch": "^0.1.2",
     "langchain": "^0.0.200",
     "solid-js": "^1.8.5",
-    "solid-start": "^0.3.10"
+    "solid-start": "^0.3.10",
+    "solid-start-vercel": "^0.3.10"
   },
   "engines": {
     "node": "18"
