@@ -4,17 +4,19 @@ import QuestionCard from "./QuestionCard";
 import { getQuestions } from "~/client/requests";
 import ChatScreen from "./ChatScreen";
 import constants from "~/constants";
+import { SessionObject } from "firstbatch";
 
 /**
  * Within a session, we see a batch of questions along with a chat bot where we can
  * ask specific questions to the chat bot.
  * @param props session id for the backend
  */
-export default function Session(props: { sessionId: string; resetSession: () => Promise<void> }) {
+export default function Session(props: { session: SessionObject; resetSession: () => Promise<void> }) {
   const [chatHistory, setChatHistory] = createSignal<string[]>([constants.WELCOME_MESSAGE]);
   const [isLoading, setIsLoading] = createSignal(true);
   const [questions, setQuestions] = createSignal<QuestionBatch[1]>([]);
   const [visited, setVisited] = createSignal<boolean[]>([]);
+  const questionIds = () => questions().map((q) => q.id);
 
   // chat modal stuff
   const chatModalId = "chatmodalrag";
@@ -22,7 +24,7 @@ export default function Session(props: { sessionId: string; resetSession: () => 
 
   async function refreshQuestions() {
     setIsLoading(true);
-    const questions = await getQuestions(props.sessionId);
+    const questions = await getQuestions(props.session);
     setQuestions(questions);
     setVisited(questions.map(() => false));
     setIsLoading(false);
@@ -51,7 +53,7 @@ export default function Session(props: { sessionId: string; resetSession: () => 
               <QuestionCard
                 question={question.data}
                 contentId={question.id}
-                sessionId={props.sessionId}
+                session={props.session}
                 visited={visited()[i()]}
                 visit={() => {
                   setVisited((arr) => arr.map((v, j) => (i() === j ? true : v)));
@@ -90,7 +92,8 @@ export default function Session(props: { sessionId: string; resetSession: () => 
           ref={chatModalRef}
         >
           <ChatScreen
-            sessionId={props.sessionId}
+            session={props.session}
+            ids={questionIds()}
             chatHistory={chatHistory()}
             updateChatHistory={(message) => {
               setChatHistory((history) => [...history, message]);

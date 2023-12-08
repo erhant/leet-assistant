@@ -23,11 +23,11 @@ export type SignalType = "solve" | "retry" | "fail";
 export type PromptInputType = {
   prompt: PromptType;
   // chatHistory: [string, string][];
-  context: QuestionBatch[1];
+  context: Question[];
 };
 
 /** A user session. The key is sessionId. */
 export type SessionType = {
-  sdkSession: SessionObject;
-  lastBatch: QuestionBatch;
+  sdkSession: SessionObject; // FirstBatch session
+  lastBatch: QuestionBatch[0]; // ids for the latest batch
 };

@@ -3,27 +3,23 @@ import { newSession } from "~/client/requests";
 import Session from "~/components/Session";
 import Greeting from "~/components/Greeting";
 import ThemeToggle from "~/components/ThemeToggle";
+import { SessionObject } from "firstbatch";
 
 export default function Home() {
-  const [sessionId, setSessionId] = createSignal("");
+  const [session, setSession] = createSignal<SessionObject>();
 
   async function createNewSession() {
-    const sessionId = await newSession();
-    setSessionId(sessionId);
+    const session = await newSession();
+    setSession(session);
   }
 
   return (
     <main>
       <ThemeToggle />
 
-      <Show when={sessionId() !== ""} fallback={<Greeting newSession={createNewSession} />}>
-        <Session sessionId={sessionId()} resetSession={createNewSession} />
+      <Show when={session() !== undefined} fallback={<Greeting newSession={createNewSession} />}>
+        <Session session={session()!} resetSession={createNewSession} />
       </Show>
-      {/* <footer class="footer footer-center p-4 bg-base-300 text-base-content">
-        <div>
-          <p>{"© 2023 - erhant"}</p>
-        </div>
-      </footer> */}
     </main>
   );
 }

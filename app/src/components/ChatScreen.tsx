@@ -1,3 +1,4 @@
+import { SessionObject } from "firstbatch";
 import { For, Show, createSignal } from "solid-js";
 import { makePrompt } from "~/client/requests";
 import type { PromptType } from "~/types";
@@ -24,8 +25,9 @@ function formatPrompt(prompt: PromptType) {
 }
 
 export default function ChatScreen(props: {
-  sessionId: string;
+  session: SessionObject;
   chatHistory: string[];
+  ids: string[]; // ids of the current questions
   updateChatHistory: (message: string) => void;
 }) {
   const [isLoading, setIsLoading] = createSignal(false);
@@ -43,7 +45,7 @@ export default function ChatScreen(props: {
 
     // assistant prompt
     setIsLoading(true);
-    const [_, assistantMessage] = await makePrompt(props.sessionId, prompt);
+    const [_, assistantMessage] = await makePrompt(props.session, prompt, props.ids);
     props.updateChatHistory(assistantMessage);
     setIsLoading(false);
   }

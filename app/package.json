@@ -1,13 +1,13 @@
 {
-  "name": "leet-assistant-solid",
+  "name": "leet-assistant",
   "private": true,
   "author": "erhant",
+  "type": "module",
   "scripts": {
     "dev": "solid-start dev",
     "build": "solid-start build",
     "start": "solid-start start"
   },
-  "type": "module",
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.15",
@@ -25,7 +25,8 @@
     "firstbatch": "^0.1.2",
     "langchain": "^0.0.200",
     "solid-js": "^1.8.5",
-    "solid-start": "^0.3.10"
+    "solid-start": "^0.3.10",
+    "solid-start-vercel": "^0.3.10"
   },
   "engines": {
     "node": "18"

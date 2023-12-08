@@ -33,11 +33,8 @@ export async function setupRAG() {
 }
 
 export const format = {
-  /** Given a chat history (an array of pairs) convert it to a string. */
-  // chatHistory: (chatHistory: PromptInputType["chatHistory"]): string =>
-  //   chatHistory.map((dialogueTurn) => `Human: ${dialogueTurn[0]}\nAssistant: ${dialogueTurn[1]}`).join("\n"),
   /** Given a context (an array of documents) convert it to a string. */
-  context: (context: PromptInputType["context"]): string => context.map((metadata) => metadata.data.text).join("\n"),
+  context: (context: PromptInputType["context"]): string => context.map((question) => question.text).join("\n"),
   /** Choose a prepared statement w.r.t a prompt. */
   prompt: (prompt: PromptInputType["prompt"]): string => constants.PROMPTS[prompt],
 };

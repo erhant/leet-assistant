@@ -1,9 +1,9 @@
-import { APIEvent, json } from "solid-start";
+import { json } from "solid-start";
 import constants from "~/api/constants";
-import { write } from "~/api/state";
 import { connectPinecone, setupFirstBatch } from "~/api/util";
+import type { EndpointSession } from "~/api/types";
 
-export async function POST({ request }: APIEvent) {
+export async function POST() {
   const index = await connectPinecone();
   const personalized = await setupFirstBatch(index);
 
@@ -11,7 +11,5 @@ export async function POST({ request }: APIEvent) {
     customId: constants.FIRSTBATCH.ALGORITHM_ID,
   });
 
-  const cookie = await write(request, session.id, { lastBatch: [[], []], sdkSession: session });
-
-  return json(session, { headers: { "Set-Cookie": cookie } });
+  return json(session satisfies EndpointSession["res"]);
 }

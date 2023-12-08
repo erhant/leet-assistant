@@ -1,25 +1,19 @@
 import { APIEvent, json } from "solid-start";
-import { read } from "~/api/state";
-import { format, setupRAG } from "~/api/util";
+import { connectPinecone, format, setupRAG } from "~/api/util";
+import type { EndpointPrompt } from "~/api/types";
 
 export async function POST({ request }: APIEvent) {
+  const index = await connectPinecone();
   const { chain } = await setupRAG();
 
-  const body = await request.json();
-  const session = await read(request, body.sessionId);
+  const { ids, prompt } = (await request.json()) as EndpointPrompt["req"];
 
-  // ignore ids (as _) because they are also within the metadata
-  const [_, metadata] = session.lastBatch;
+  // fetch questions by ids from Pinecone
+  const questions = await index.fetch(ids);
+  const context = Object.values(questions.records!).map((q) => q.metadata!);
 
-  const response = await chain.invoke({
-    // chatHistory: session.chatHistory,
-    context: metadata,
-    prompt: body.prompt,
-  });
+  const response = await chain.invoke({ context, prompt });
 
-  // store the response in user history FIXME: remove this part
-  const userPromptFormatted = format.prompt(body.prompt);
-  // session.chatHistory.push(userPromptFormatted, response);
-
-  return json([userPromptFormatted, response] as const);
+  const userPromptFormatted = format.prompt(prompt);
+  return json([userPromptFormatted, response] satisfies EndpointPrompt["res"]);
 }

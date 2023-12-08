@@ -1,16 +1,14 @@
 import { APIEvent, json } from "solid-start";
-import constants from "~/api/constants";
-import { read } from "~/api/state";
 import { connectPinecone, setupFirstBatch } from "~/api/util";
-import { QuestionBatch } from "~/types";
+import type { EndpointBatch } from "~/api/types";
+import type { QuestionBatch } from "~/types";
 
 export async function POST({ request }: APIEvent) {
   const index = await connectPinecone();
   const personalized = await setupFirstBatch(index);
-  const body = await request.json();
+  const { session } = (await request.json()) as EndpointBatch["req"];
 
-  console.log(body);
+  const batch = (await personalized.batch(session)) as QuestionBatch;
 
-  const batch = (await personalized.batch({ id: body.sessionId, isPersistent: false })) as QuestionBatch;
-  return json(batch[1]);
+  return json(batch[1] satisfies EndpointBatch["res"]);
 }

@@ -2,9 +2,10 @@ import type { Question, SignalType } from "~/types";
 import QuestionBadges from "./QuestionBadges";
 import QuestionView from "./QuestionView";
 import { makeSignal } from "~/client/requests";
+import { SessionObject } from "firstbatch";
 
 export default function QuestionCard(props: {
-  sessionId: string;
+  session: SessionObject;
   question: Question;
   contentId: string;
   visited: boolean;
@@ -15,7 +16,7 @@ export default function QuestionCard(props: {
   const cardOpacity = () => (props.visited ? " opacity-60" : "");
 
   async function handleSignal(signal: SignalType) {
-    await makeSignal(props.sessionId, props.contentId, signal);
+    await makeSignal(props.session, props.contentId, signal);
     modalRef.close();
   }
 
