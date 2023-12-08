@@ -32,46 +32,16 @@ You can locally setup this project by following these steps:
 - You will also need an [OpenAI](https://chat.openai.com/) API KEY to compute embeddings.
 - Convert the questions to embeddings, and upload them to your Pinecone index; see [below](#data) for instructions.
 - Get a [FirstBatch User Embeddings](https://userembeddings.firstbatch.xyz/) API key.
-- Start the [backend](#backend) server with an `.env` file using your API keys, example provided [here](./backend/.env.example).
-- Finally, start the [frontend](#frontend) server. You should be able to see the web-app at `localhost:3000`, and by default the backend will be at `localhost:8080`.
+- TODO: describe server launch
 
 ### Code Structure
 
-This project uses [Bun](https://bun.sh/) runtime.
-
-- [**Backend**](./backend/) is a simple RESTful api, using [Elysia](https://elysiajs.com/) + [FirstBatch](https://www.firstbatch.xyz/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
-- [**Frontend**](./frontend/) is a single-page web-app, using [Solid](https://www.solidjs.com/) + [Tailwind](https://tailwindcss.com) + [Daisy](https://daisyui.com/).
+- [**App**](./app/) is a simple RESTful api, using [Solid](https://www.solidjs.com/) for the webapp and API endpoits, with [Tailwind](https://tailwindcss.com) + [Daisy](https://daisyui.com/) for the frontend and [FirstBatch](https://www.firstbatch.xyz/) + [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/) for the backend.
 - [**Data**](./data/) has the logic to convert the given set of [LeetCode Questions](https://www.kaggle.com/datasets/manthansolanki/leetcode-questions) to embeddings and store them in a vectorDB, using [LangChain](https://www.langchain.com/) + [Pinecone](https://www.pinecone.io/).
-
-> [!TIP]
->
-> [Eden Treaty](https://elysiajs.com/plugins/eden/treaty.html) is also used to consume our backend within the frontend, without any hassle or code-rewrite. See [api/backend](./frontend/src/api/backend.ts) for details.
 
 ### Backend
 
 Uses ElysiaJS with Bun. The AI code based on the [RAG tutorial](https://js.langchain.com/docs/expression_language/cookbook/retrieval) by LangChain, and the context for this AI is fed via FirstBatch SDK. To start the server:
-
-```bash
-cd backend
-bun dev  # development
-bun prod # production
-```
-
-It might take a bit of time at first due to FirstBatch setting up the database, if you are using a new vectorDB identifier. You can also run tests, albeit at the cost of some API requests:
-
-```sh
-bun test --timeout 300000 --bail
-```
-
-We also have prepared scripts for Docker:
-
-```sh
-# build an image
-docker build --pull -t leet-assistant-backend .
-
-# run a container
-./run.sh
-```
 
 ### Frontend
 

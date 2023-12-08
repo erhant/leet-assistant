@@ -14,6 +14,7 @@ export type Question = {
   hints: string;
   similarQuestionIds: string[];
   similarQuestionsText: string[];
+  text?: string; // this is not present at the start, but added by Pinecone
 };
 
 /** A raw question row from the CSV file. */
