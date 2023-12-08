@@ -28,8 +28,6 @@ export type PromptInputType = {
 
 /** A user session. The key is sessionId. */
 export type SessionType = {
-  [SessionId: string]: {
-    sdkSession: SessionObject;
-    lastBatch: QuestionBatch;
-  };
+  sdkSession: SessionObject;
+  lastBatch: QuestionBatch;
 };

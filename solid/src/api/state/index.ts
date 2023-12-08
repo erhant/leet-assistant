@@ -1,5 +1,7 @@
 import { createCookieSessionStorage } from "solid-start";
+import { SessionType } from "~/types";
 
+const SESSION_COOKIE = "Cookie";
 const storage = createCookieSessionStorage({
   cookie: {
     name: "session",
@@ -13,15 +15,19 @@ const storage = createCookieSessionStorage({
 });
 
 /** Returns `Set-Cookie` header value. */
-export async function write(request: Request, sessionId: string, data: any) {
-  const session = await storage.getSession(request.headers.get("Cookie"));
+export async function write(request: Request, sessionId: string, data: SessionType) {
+  const session = await storage.getSession(request.headers.get(SESSION_COOKIE));
 
   session.set(sessionId, data);
   return await storage.commitSession(session);
 }
 
-export async function read(request: Request, sessionId: string) {
-  const session = await storage.getSession(request.headers.get("Cookie"));
+export async function read(request: Request, sessionId: string): Promise<SessionType> {
+  const session = await storage.getSession(request.headers.get(SESSION_COOKIE));
+
+  if (!session.has(sessionId)) {
+    throw new Error("Session does not exist.");
+  }
 
   const sdkSession = session.get(sessionId);
   return sdkSession;

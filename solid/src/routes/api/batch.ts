@@ -9,9 +9,8 @@ export async function POST({ request }: APIEvent) {
   const personalized = await setupFirstBatch(index);
   const body = await request.json();
 
+  console.log(body);
+
   const batch = (await personalized.batch({ id: body.sessionId, isPersistent: false })) as QuestionBatch;
-
-  // TODO
-
-  return json(batch);
+  return json(batch[1]);
 }

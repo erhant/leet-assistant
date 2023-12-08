@@ -11,10 +11,7 @@ export async function POST({ request }: APIEvent) {
     customId: constants.FIRSTBATCH.ALGORITHM_ID,
   });
 
-  const cookie = await write(request, session.id, { hi: 123 });
-  return json(session, {
-    headers: {
-      "Set-Cookie": cookie,
-    },
-  });
+  const cookie = await write(request, session.id, { lastBatch: [[], []], sdkSession: session });
+
+  return json(session, { headers: { "Set-Cookie": cookie } });
 }
