@@ -1,3 +1,4 @@
+import axios from "axios";
 import { SessionObject } from "firstbatch";
 import { EndpointBatch, EndpointPrompt, EndpointSession, EndpointSignal } from "~/api/types";
 import constants from "~/constants";
@@ -5,31 +6,32 @@ import { PromptType, SignalType } from "~/types";
 
 console.log("BASE URL:", constants.BASE_URL);
 
+const client = axios.create({
+  baseURL: constants.BASE_URL + "/",
+  timeout: 40_000, // 40 secs, esp. due to chatgpt stuff
+});
+
 /** Make a POST request to the backend API.
  *
  * @param url endpoint, not including the base URL
  * @param data optional data
  * @template T endpoint type
  */
-async function post<T extends { req: any; res: any }>(url: string, data: T["req"]) {
-  const targetUrl = constants.BASE_URL + "/" + url;
-  const reqBody = data && JSON.stringify(data);
-
-  const response = await fetch(targetUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: reqBody,
-  });
+async function post<
+  T extends {
+    /** Request body type */
+    req: any;
+    /** Response body type */
+    res: any;
+  }
+>(url: string, data: T["req"]): Promise<T["res"]> {
+  const response = await client.post(url, data);
 
   if (response.status !== 200) {
-    throw new Error(`POST ${targetUrl} failed with ${response.statusText} (${response.status})`);
+    throw new Error(`POST ${constants.BASE_URL + "/" + url} failed with ${response.statusText} (${response.status})`);
   }
 
-  const resBody = (await response.json()) as T["res"];
-
-  return resBody;
+  return response.data as T["res"];
 }
 
 export async function getQuestions(session: SessionObject) {

@@ -1,4 +1,5 @@
 // prompt for the PromptTemplate
+// note that the template must be reasonably short, otherwise you may hit the token limit (4096)
 export const templatePrompt: string = `You are "Leet Assistant".
 
 "Leet Assistant" is a chat-bot designed to help programmers choose computer science problems to study, 
@@ -12,7 +13,6 @@ Answer the following question based on the given context of LeetCode problems, f
 
 Do not mention the context or ask for future directives, just provide answer in a concise way, and only the answer.
 Do not say things like "In the given context of LeetCode problems" or "based on the given context".
-
 `;
 
 // should describe the general idea about my current topics

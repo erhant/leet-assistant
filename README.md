@@ -11,7 +11,7 @@
 
 [LeetCode](https://leetcode.com/) is an online platform where you solve coding challenges, such as coding interview questions and competitive programming questions. It has over 2000 problems, with a wide variety of topics.
 
-Leet Assistant is a proof-of-concept tool that demonstrates effortless plug-and-play personalization of [FirstBatch User Embeddings](https://userembeddings.firstbatch.xyz/).
+[Leet Assistant](https://leet-assistant.vercel.app/) is a proof-of-concept tool that demonstrates effortless plug-and-play personalization of [FirstBatch User Embeddings](https://userembeddings.firstbatch.xyz/).
 
 The general idea is as follows:
 
@@ -25,6 +25,8 @@ The general idea is as follows:
 A chat-bot is also provided that is connected to ChatGPT. It uses the batch of questions retrieved by FirstBatch to create a context, and using LangChain we make Retrival-Augmented Generation (RAG) to answer certain questions about the given batch of questions.
 
 ## Local Setup
+
+You can
 
 You can locally setup this project by following these steps:
 
