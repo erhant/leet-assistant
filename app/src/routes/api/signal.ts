@@ -4,6 +4,7 @@ import constants from "~/api/constants";
 import errors from "~/api/errors";
 import type { EndpointSignal } from "~/api/types";
 
+/** Signal a user action within the user embedding space. */
 export async function POST({ request }: APIEvent) {
   const index = await connectPinecone();
   const personalized = await setupFirstBatch(index);

@@ -2,6 +2,7 @@ import { APIEvent, json } from "solid-start";
 import { connectPinecone, format, setupRAG } from "~/api/util";
 import type { EndpointPrompt } from "~/api/types";
 
+/** Make a prompt to ChatGPT. */
 export async function POST({ request }: APIEvent) {
   const index = await connectPinecone();
   const { chain } = await setupRAG();

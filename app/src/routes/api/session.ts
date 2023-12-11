@@ -3,6 +3,7 @@ import constants from "~/api/constants";
 import { connectPinecone, setupFirstBatch } from "~/api/util";
 import type { EndpointSession } from "~/api/types";
 
+/** Create a new personalized session. */
 export async function POST() {
   const index = await connectPinecone();
   const personalized = await setupFirstBatch(index);

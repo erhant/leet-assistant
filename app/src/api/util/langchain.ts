@@ -15,6 +15,7 @@ export async function setupRAG() {
   const API_KEY = process.env.OPENAI_API_KEY;
   const model = new ChatOpenAI({
     openAIApiKey: API_KEY,
+    timeout: 40_000,
   });
   const prompt = PromptTemplate.fromTemplate(constants.PROMPTS.template);
   const chain = RunnableSequence.from([

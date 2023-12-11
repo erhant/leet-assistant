@@ -17,6 +17,7 @@ export default function Session(props: { session: SessionObject; resetSession: (
   const [questions, setQuestions] = createSignal<QuestionBatch[1]>([]);
   const [visited, setVisited] = createSignal<boolean[]>([]);
   const questionIds = () => questions().map((q) => q.id);
+  const buttonLoading = () => isLoading() && " btn-disabled";
 
   // chat modal stuff
   const chatModalId = "chatmodalrag";
@@ -68,20 +69,29 @@ export default function Session(props: { session: SessionObject; resetSession: (
       <div class="flex flex-col md:flex-row justify-center mx-auto my-4 gap-x-4 gap-y-3">
         {/* get a new set of questions */}
         <div class="tooltip" data-tip="Get a new batch of questions based on your actions.">
-          <button class="btn btn-neutral btn-lg btn-outline hover:bg-primary" onClick={() => refreshQuestions()}>
+          <button
+            class={"btn btn-neutral btn-lg btn-outline hover:bg-primary" + buttonLoading()}
+            onClick={() => !isLoading() && refreshQuestions()}
+          >
             New Questions
           </button>
         </div>
 
         {/* creates a new session and calls refresh */}
         <div class="tooltip" data-tip="Start from the beginning, as if you have just created a session.">
-          <button class="btn btn-neutral btn-lg btn-outline hover:bg-error" onClick={() => reset()}>
+          <button
+            class={"btn btn-neutral btn-lg btn-outline hover:bg-error" + buttonLoading()}
+            onClick={() => !isLoading() && reset()}
+          >
             New Session
           </button>
         </div>
         {/* this is a button along with a chat dialog modal */}
         <div class="tooltip" data-tip="Talk to your Leet Assistant, powered by ChatGPT.">
-          <button class="btn btn-neutral btn-lg btn-outline hover:bg-accent" onClick={() => chatModalRef.showModal()}>
+          <button
+            class={"btn btn-neutral btn-lg btn-outline hover:bg-accent" + buttonLoading()}
+            onClick={() => !isLoading() && chatModalRef.showModal()}
+          >
             Chat with Assistant
           </button>
         </div>

@@ -1,15 +1,9 @@
-import axios from "axios";
 import { SessionObject } from "firstbatch";
 import { EndpointBatch, EndpointPrompt, EndpointSession, EndpointSignal } from "~/api/types";
 import constants from "~/constants";
 import { PromptType, SignalType } from "~/types";
 
 console.log("BASE URL:", constants.BASE_URL);
-
-const client = axios.create({
-  baseURL: constants.BASE_URL + "/",
-  timeout: 40_000, // 40 secs, esp. due to chatgpt stuff
-});
 
 /** Make a POST request to the backend API.
  *
@@ -25,13 +19,24 @@ async function post<
     res: any;
   }
 >(url: string, data: T["req"]): Promise<T["res"]> {
-  const response = await client.post(url, data);
+  const targetUrl = constants.BASE_URL + "/" + url;
+  const reqBody = data && JSON.stringify(data);
+
+  const response = await fetch(targetUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: reqBody,
+  });
 
   if (response.status !== 200) {
-    throw new Error(`POST ${constants.BASE_URL + "/" + url} failed with ${response.statusText} (${response.status})`);
+    throw new Error(`POST ${targetUrl} failed with ${response.statusText} (${response.status})`);
   }
 
-  return response.data as T["res"];
+  const resBody = (await response.json()) as T["res"];
+
+  return resBody;
 }
 
 export async function getQuestions(session: SessionObject) {
