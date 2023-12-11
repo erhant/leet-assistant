@@ -65,7 +65,7 @@ export default function Session(props: { session: SessionObject; resetSession: (
       </div>
 
       {/* controls */}
-      <div class="flex flex-row justify-center mx-auto my-4 gap-x-4">
+      <div class="flex flex-col md:flex-row justify-center mx-auto my-4 gap-x-4 gap-y-3">
         {/* get a new set of questions */}
         <div class="tooltip" data-tip="Get a new batch of questions based on your actions.">
           <button class="btn btn-neutral btn-lg btn-outline hover:bg-primary" onClick={() => refreshQuestions()}>
