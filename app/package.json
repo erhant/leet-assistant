@@ -22,6 +22,7 @@
     "@pinecone-database/pinecone": "1.0.1",
     "@solidjs/meta": "^0.29.1",
     "@solidjs/router": "^0.8.3",
+    "axios": "^1.6.2",
     "firstbatch": "^0.1.2",
     "langchain": "^0.0.200",
     "solid-js": "^1.8.5",
