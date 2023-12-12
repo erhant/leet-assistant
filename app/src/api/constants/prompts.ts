@@ -21,7 +21,7 @@ export const describePrompt: string =
 
 // should give advice on how to improve on the current topics
 export const consultPrompt: string =
-  "What resources would you suggest that I study to get better at the topics in my context? If you can recommend books, other websites or resources, please list them.";
+  "What resources would you suggest that I study to get better at the topics in my context? If you can recommend books, other websites or resources, please list them, at most 4-5 items.";
 
 // should suggest other types of topics
 export const suggestPrompt: string =

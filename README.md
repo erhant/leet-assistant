@@ -28,6 +28,8 @@ A chat-bot is also provided that is connected to ChatGPT. It uses the batch of q
 
 So how does personalizaton work with FirstBatch? The docs describe it perfectly (see [here](https://firstbatch.gitbook.io/firstbatch-sdk/get-started/introduction)), but we will also provide a short description here as well.
 
+The algorithm designed for this use-case can be found under the [img folder](./img/algorithm.png).
+
 ### Creating a Session
 
 First, the user create a session through a POST request at `/session`, which corresponds to the following call:
@@ -108,3 +110,11 @@ bun run pinecone  # describe Pinecone index
 bun run questions # print random questions to console
 bun run train     # compute question embeddings & upload them to Pinecone
 ```
+
+## Remarks
+
+- I had initially written everything with Bun, with Elysia as backend and Solid as frontend. However, deploying a Bun backend within a free-tier plan was a total nightmare, so I changed the backend to reside within the api routes of the Solid app. See this version of the code at the [`bun`](https://github.com/erhant/leet-assistant/tree/bun) branch in this repo.
+
+- Everything is deployed at Vercel in a free-tier plan, so api endpoints may sometimes timeout (especially ChatGPT ones) because Vercel imposes some limits on the runtime duration of serverless functions.
+
+- There is a lot of fine-tuning to do, both for the ChatGPT prompts and for the personalization through FirstBatch user embeddings.
