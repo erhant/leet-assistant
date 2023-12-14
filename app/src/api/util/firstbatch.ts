@@ -16,7 +16,12 @@ export async function setupFirstBatch(index: Index) {
   });
 
   const vectorStore = new Pinecone(index);
-  await sdk.addVdb(constants.FIRSTBATCH.VECTORDB_ID, vectorStore);
+
+  // intentionally commented this out because we have already added our vectorStore
+  // await sdk.addVdb(constants.FIRSTBATCH.VECTORDB_ID, vectorStore);
+
+  // instead, we add our vectorStore to `sdk.store` directly
+  sdk.store[constants.FIRSTBATCH.VECTORDB_ID] = vectorStore;
 
   console.log("FirstBatch Team ID:", sdk.teamId);
 

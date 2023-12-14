@@ -22,15 +22,14 @@
     "@pinecone-database/pinecone": "1.0.1",
     "@solidjs/meta": "^0.29.1",
     "@solidjs/router": "^0.8.3",
-    "axios": "^1.6.2",
-    "firstbatch": "^0.1.2",
+    "firstbatch": "^0.1.5",
     "langchain": "^0.0.200",
     "solid-js": "^1.8.5",
     "solid-start": "^0.3.10",
     "solid-start-vercel": "^0.3.10"
   },
   "engines": {
-    "node": "18"
+    "node": ">=18"
   },
   "prettier": {
     "printWidth": 120

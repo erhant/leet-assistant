@@ -13,7 +13,7 @@ export default {
     ALGORITHM_ID: process.env.FIRSTBATCH_ALGORITHM_ID,
     ALGORITHM_NAME: "CUSTOM",
     BATCH_SIZE: 12, // 12 question per refresh for UI
-    VECTORDB_ID: "leet-assistant-11", // FIXME: give a better name when finished
+    VECTORDB_ID: "leet-assistant-vdbid",
   },
   /** Pinecone credentials. */
   PINECONE: {
@@ -23,9 +23,9 @@ export default {
   },
   /** User actions for FirstBatch SDK. */
   ACTIONS: {
-    solve: new UserAction(new Signal("SOLVE", 1.2)),
-    retry: new UserAction(new Signal("RETRY", 1.2)),
-    fail: new UserAction(new Signal("FAIL", 1.8)),
+    solve: new UserAction(new Signal("SOLVE", 1)),
+    retry: new UserAction(new Signal("RETRY", 1)),
+    fail: new UserAction(new Signal("FAIL", 1)),
   } satisfies Record<SignalType, UserAction>,
   /** Prompts for LangChain. */
   PROMPTS: {
